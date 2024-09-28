@@ -33,7 +33,6 @@ function ExpensesScreen() {
   };
   return (
     <div className="p-10">
-      <AddExpense user={user} />
       <h2 className="font-bold text-3xl">My Expenses</h2>
 
       <ExpenseListTable

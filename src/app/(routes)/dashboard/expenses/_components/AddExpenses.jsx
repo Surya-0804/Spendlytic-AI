@@ -10,6 +10,7 @@ import { Budgets, Expenses } from "../../../../../../utils/schema";
 function AddExpense({ budgetId, user, refreshData }) {
   const [name, setName] = useState();
   const [amount, setAmount] = useState();
+  // const [budgetId, budgetId] = useState();
   const [loading, setLoading] = useState(false);
   /**
    * Used to Add New Expense
@@ -55,6 +56,14 @@ function AddExpense({ budgetId, user, refreshData }) {
           onChange={(e) => setAmount(e.target.value)}
         />
       </div>
+      {/* <div className="mt-2">
+        <h2 className="text-black font-medium my-1">Budget Id</h2>
+        <Input
+          placeholder="e.g. 1000"
+          value={budgetId}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </div> */}
       <Button
         disabled={!(name && amount) || loading}
         onClick={() => addNewExpense()}

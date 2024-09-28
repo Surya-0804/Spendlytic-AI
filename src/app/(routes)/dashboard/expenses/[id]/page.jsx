@@ -1,14 +1,11 @@
 "use client";
-import { db } from "@/utils/dbConfig";
-import { Budgets, Expenses } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
 import React, { useEffect, useState } from "react";
 import BudgetItem from "../../budgets/_components/BudgetItem";
-import AddExpense from "../_components/AddExpense";
-import ExpenseListTable from "../_components/ExpenseListTable";
+import ExpensesListTable from "../_components/ExpensesListTable";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Pen, PenBox, Trash } from "lucide-react";
+import { ArrowLeft, Pen, PenBox, Trash, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +20,9 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditBudget from "../_components/EditBudget";
+import { Budgets, Expenses } from "../../../../../../utils/schema";
+import { db } from "../../../../../../utils/dbConfig";
+import AddExpense from "../_components/AddExpenses";
 
 function ExpensesScreen({ params }) {
   const { user } = useUser();
@@ -37,20 +37,34 @@ function ExpensesScreen({ params }) {
    * Get Budget Information
    */
   const getBudgetInfo = async () => {
-    const result = await db
-      .select({
-        ...getTableColumns(Budgets),
-        totalSpend: sql`sum(${Expenses.amount})`.mapWith(Number),
-        totalItem: sql`count(${Expenses.id})`.mapWith(Number),
-      })
-      .from(Budgets)
-      .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-      .where(eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress))
-      .where(eq(Budgets.id, params.id))
-      .groupBy(Budgets.id);
+    try {
+      const result = await db
+        .select({
+          ...getTableColumns(Budgets),
+          totalSpend: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(
+            Number
+          ),
+          totalItem: sql`count(${Expenses.id})`.mapWith(Number),
+        })
+        .from(Budgets)
+        .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+        .where(
+          and(
+            eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress),
+            eq(Budgets.id, params.id)
+          )
+        )
+        .groupBy(Budgets.id);
 
-    setbudgetInfo(result[0]);
-    getExpensesList();
+      if (result.length > 0) {
+        setbudgetInfo(result[0]);
+        getExpensesList();
+      } else {
+        console.warn("No budget information found");
+      }
+    } catch (error) {
+      console.error("Error fetching budget info:", error);
+    }
   };
 
   /**
@@ -101,7 +115,7 @@ function ExpensesScreen({ params }) {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="flex gap-2 rounded-full" variant="destructive">
-                <Trash className="w-4" /> Delete
+                <Trash2 className="w-4" /> Delete
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -142,7 +156,7 @@ function ExpensesScreen({ params }) {
         />
       </div>
       <div className="mt-4">
-        <ExpenseListTable
+        <ExpensesListTable
           expensesList={expensesList}
           refreshData={() => getBudgetInfo()}
         />

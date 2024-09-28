@@ -34,7 +34,7 @@ function ExpenseListTable({ expensesList, refreshData }) {
         <h2 className="font-bold">Date</h2>
         <h2 className="font-bold">Action</h2>
       </div>
-      {expensesList.map((expenses) => (
+      {expensesList?.map((expenses) => (
         <div
           key={expenses.id} // Ensure each item has a unique key
           className="grid grid-cols-4 bg-slate-50 rounded-bl-xl rounded-br-xl p-2"

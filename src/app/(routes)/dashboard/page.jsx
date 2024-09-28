@@ -23,7 +23,10 @@ const Dashboard = () => {
     const response = await db
       .select({
         ...getTableColumns(Budgets),
-        totalSpend: sql`sum(${Expenses.amount})`.mapWith(Number),
+        // Cast amount to numeric type before summing
+        totalSpend: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(
+          Number
+        ),
         totalItem: sql`count(${Expenses.id})`.mapWith(Number),
       })
       .from(Budgets)
@@ -58,7 +61,7 @@ const Dashboard = () => {
       const response = await db
         .select({
           ...getTableColumns(Incomes),
-          totalAmount: sql`sum(cast(${Incomes.amount})) as numeric())`.mapWith(
+          totalAmount: sql`sum(cast(${Incomes.amount} as numeric))`.mapWith(
             Number
           ),
         })
@@ -89,12 +92,15 @@ const Dashboard = () => {
         <div className="grid gap-5">
           <h2 className="font-bold text-lg">Latest Budgets</h2>
           {budgetList?.length > 0
-            ? budgetList.map((budget, index) => {
-                <BudgetItem budget={budget} key={index} />;
-              })
-            : [1, 2, 3, 4].map((items, index) => {
-                <div className="h-[180px] w-full bg-slate-200 lg animate-pulse"></div>;
-              })}
+            ? budgetList.map((budget, index) => (
+                <BudgetItem budget={budget} key={index} />
+              ))
+            : [1, 2, 3, 4].map((items, index) => (
+                <div
+                  key={index}
+                  className="h-[180px] w-full bg-slate-200 lg animate-pulse"
+                ></div>
+              ))}
         </div>
       </div>
     </div>

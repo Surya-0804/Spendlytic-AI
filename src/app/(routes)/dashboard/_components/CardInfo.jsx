@@ -5,8 +5,10 @@ import {
   Wallet,
   Sparkles,
   CircleDollarSign,
+  ReceiptText,
 } from "lucide-react";
 import getFinancialAdvice from "../../../../../utils/getFinancialAdvice";
+import formatNumber from "../../../../../utils";
 
 const CardInfo = ({ budgetList, incomeList }) => {
   const [totalBudget, setTotalBudget] = useState(0);
