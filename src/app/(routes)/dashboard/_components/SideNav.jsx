@@ -1,6 +1,12 @@
 import React from "react";
 import { UserButton } from "@clerk/nextjs";
-import { LayoutDashboard, CircleDollarSign, PiggyBank, ReceiptIndianRupee, ShieldCheck } from "lucide-react";
+import {
+  LayoutDashboard,
+  CircleDollarSign,
+  PiggyBank,
+  ReceiptIndianRupee,
+  ShieldCheck,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,23 +26,23 @@ const SideNav = () => {
       path: "/dashboard/incomes",
     },
     {
-      id: 4,
+      id: 3,
       name: "Budgets",
       icon: PiggyBank,
       path: "/dashboard/budgets",
     },
     {
-      id: 5,
+      id: 4,
       name: "Expenses",
       icon: ReceiptIndianRupee,
       path: "/dashboard/expenses",
     },
-    {
-      id: 6,
-      name: "Upgrade",
-      icon: ShieldCheck,
-      path: "/dashboard/upgrade",
-    },
+    // {
+    //   id: 5,
+    //   name: "Upgrade",
+    //   icon: ShieldCheck,
+    //   path: "/dashboard/upgrade",
+    // },
   ];
 
   const path = usePathname();
