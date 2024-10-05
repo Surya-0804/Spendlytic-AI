@@ -16,7 +16,11 @@ const Dashboard = () => {
   const [expenseList, setExpenseList] = useState([]);
 
   useEffect(() => {
-    user && getBudgetList();
+    if (user) {
+      (async () => {
+        await getBudgetList();
+      })();
+    }
   }, [user]);
 
   const getBudgetList = async () => {
@@ -41,21 +45,33 @@ const Dashboard = () => {
   };
 
   const getAllExpenses = async () => {
-    const response = await db
-      .select({
-        id: Expenses.id,
-        name: Expenses.name,
-        amount: Expenses.amount,
-        createdAt: Expenses.createdAt,
-      })
-      .from(Budgets)
-      .rightJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-      .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
-      .groupBy(Budgets.id)
-      .orderBy(desc(Expenses.id));
-    setExpenseList(response);
-  };
+    if (
+      !user ||
+      !user.primaryEmailAddress ||
+      !user.primaryEmailAddress.emailAddress
+    ) {
+      console.error("User email address not available.");
+      return;
+    }
 
+    try {
+      const response = await db
+        .select({
+          id: Expenses.id,
+          name: Expenses.name,
+          amount: Expenses.amount,
+          createdAt: Expenses.createdAt,
+        })
+        .from(Expenses)
+        .where(eq(Expenses.createdBy, user.primaryEmailAddress.emailAddress))
+        .orderBy(desc(Expenses.id));
+
+      // console.log("Expenses fetched:", JSON.stringify(response, null, 2)); // Add this detailed log
+      setExpenseList(response);
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  };
   const getIncomeList = async () => {
     try {
       const response = await db
@@ -85,8 +101,8 @@ const Dashboard = () => {
         <div className="lg:col-span-2">
           <BarCharDashboard budgetList={budgetList} />
           <ExpenseListTable
-            expenseList={expenseList}
-            refreshData={() => getBudgetList()}
+            refreshData={() => getAllExpenses()}
+            expensesList={expenseList}
           />
         </div>
         <div className="grid gap-5">

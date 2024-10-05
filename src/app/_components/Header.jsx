@@ -12,7 +12,7 @@ function Header() {
       {" "}
       {/* Reduce padding from p-5 to p-3 */}
       <div className="flex flex-row items-center">
-        <Image src={"/logo.png"} alt="logo" width={40} height={25} />
+        <Image src={"/chart-donut.svg"} alt="logo" width={40} height={25} />
         <span className="text-blue-800  font-bold text-xl">FinanSmart</span>
       </div>
       {isSignedIn ? (

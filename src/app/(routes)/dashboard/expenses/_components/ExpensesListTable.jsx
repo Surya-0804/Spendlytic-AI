@@ -6,7 +6,7 @@ import { db } from "../../../../../../utils/dbConfig";
 import { Expenses } from "../../../../../../utils/schema";
 
 function ExpenseListTable({ expensesList, refreshData }) {
-  console.log(expensesList);
+  // console.log(expensesList);
   const deleteExpense = async (expense) => {
     try {
       const result = await db
@@ -41,7 +41,7 @@ function ExpenseListTable({ expensesList, refreshData }) {
         >
           <h2>{expenses.name}</h2>
           <h2>{expenses.amount}</h2>
-          {/* <h2>{new Date(expenses.createdAt).toLocaleDateString()}</h2> */}
+          <h2>{new Date(expenses.createdAt).toLocaleDateString()}</h2>
           <div
             onClick={() => deleteExpense(expenses)}
             className="text-red-500 cursor-pointer"

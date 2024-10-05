@@ -10,11 +10,18 @@ import {
 } from "recharts";
 
 const BarCharDashboard = ({ budgetList }) => {
+  // Convert amount and totalSpend to numbers
+  const formattedBudgetList = budgetList.map((budget) => ({
+    ...budget,
+    amount: Number(budget.amount),
+    totalSpend: Number(budget.totalSpend),
+  }));
+
   return (
     <div className="border rounded-2xl p-5">
       <h2 className="font-bold text-lg">Activity</h2>
-      <ResponsiveContainer width={"80%"} height={"300px"}>
-        <BarChart data={budgetList} margin={{ top: 7 }}>
+      <ResponsiveContainer width={"100%"} height={300}>
+        <BarChart data={formattedBudgetList} margin={{ top: 7 }}>
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
