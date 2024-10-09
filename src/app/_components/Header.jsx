@@ -16,7 +16,14 @@ function Header() {
         <span className="text-blue-800  font-bold text-xl">FinanSmart</span>
       </div>
       {isSignedIn ? (
-        <UserButton />
+        <div className="flex gap-3  items-center">
+          <Link href={"/dashboard"}>
+            <Button variant="outline" className="rounded-full">
+              Dashboard
+            </Button>
+          </Link>
+          <UserButton />
+        </div>
       ) : (
         <div className="flex gap-3  items-center">
           <Link href={"/dashboard"}>
