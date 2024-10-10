@@ -61,7 +61,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
           <div className="p-7 border mt-4 -mb-1 rounded-2xl flex items-center justify-between">
             <div className="">
               <div className="flex mb-2 flex-row space-x-1 items-center ">
-                <h2 className="text-md ">Finan Smart AI</h2>
+                <h2 className="text-md ">Spendlytic AI</h2>
                 <Sparkles
                   className="rounded-full text-white w-10 h-10 p-2
   bg-gradient-to-r
