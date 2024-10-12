@@ -1,6 +1,4 @@
-# Spendlytic AI
-
-![Spendlytic AI Logo](/public/chart-donut.svg)
+# Spendlytic AI ![Spendlytic AI Logo](/public/chart-donut.svg)
 
 Spendlytic AI is an AI-powered finance analyzer that helps users manage their finances by providing intelligent insights on their spending habits. Built using Next.js, this app allows users to input their income, allocate budgets, and track expenses. The project leverages Gemini AI to offer personalized financial advice.
 
