@@ -7,7 +7,6 @@ import {
   CircleDollarSign,
   ReceiptText,
 } from "lucide-react";
-import getFinancialAdvice from "../../../../../utils/getFinancialAdvice";
 import formatNumber from "../../../../../utils";
 
 const CardInfo = ({ budgetList, incomeList }) => {
@@ -25,12 +24,29 @@ const CardInfo = ({ budgetList, incomeList }) => {
   useEffect(() => {
     if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
       const fetchFinancialAdvice = async () => {
-        const advice = await getFinancialAdvice(
-          totalBudget,
-          totalIncome,
-          totalSpend
-        );
-        setFinancialAdvice(advice);
+        try {
+          const response = await fetch("/api/financial-advice", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              totalBudget,
+              totalIncome,
+              totalSpend,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setFinancialAdvice(data.advice);
+          } else {
+            setFinancialAdvice("Unable to fetch financial advice at this time.");
+          }
+        } catch (error) {
+          console.error("Error fetching financial advice:", error);
+          setFinancialAdvice("Unable to fetch financial advice at this time.");
+        }
       };
 
       fetchFinancialAdvice();
@@ -46,7 +62,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
       totalSpend_ += Number(budget.totalSpend);
     });
     incomeList.forEach((income) => {
-      totalIncome_ += Number(income.totalAmount);
+      totalIncome_ += Number(income.amount);
     });
 
     setTotalBudget(totalBudget_);

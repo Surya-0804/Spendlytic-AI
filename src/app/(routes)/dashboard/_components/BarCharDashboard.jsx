@@ -11,25 +11,34 @@ import {
 
 const BarCharDashboard = ({ budgetList }) => {
   // Convert amount and totalSpend to numbers
-  const formattedBudgetList = budgetList.map((budget) => ({
+  const formattedBudgetList = budgetList?.map((budget) => ({
     ...budget,
     amount: Number(budget.amount),
     totalSpend: Number(budget.totalSpend),
-  }));
+  })) || [];
 
   return (
     <div className="border rounded-2xl p-5">
       <h2 className="font-bold text-lg">Activity</h2>
-      <ResponsiveContainer width={"100%"} height={300}>
-        <BarChart data={formattedBudgetList} margin={{ top: 7 }}>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="totalSpend" stackId="a" fill="#4845d2" />
-          <Bar dataKey="amount" stackId="b" fill="#c3c2ff" />
-        </BarChart>
-      </ResponsiveContainer>
+      {formattedBudgetList.length > 0 ? (
+        <ResponsiveContainer width={"100%"} height={300}>
+          <BarChart data={formattedBudgetList} margin={{ top: 7 }}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="totalSpend" stackId="a" fill="#4845d2" />
+            <Bar dataKey="amount" stackId="b" fill="#c3c2ff" />
+          </BarChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="h-[300px] flex items-center justify-center">
+          <div className="text-center text-gray-400">
+            <p className="text-sm">No budget data to display</p>
+            <p className="text-xs mt-1">Create a budget to see activity</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -22,29 +22,108 @@ function CreateIncomes({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
-  const [name, setName] = useState();
-  const [amount, setAmount] = useState();
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [amountError, setAmountError] = useState("");
 
   const { user } = useUser();
 
   /**
-   * Used to Create New Budget
+   * Validate income source name
    */
-  console.log(user?.primaryEmailAddress?.emailAddress);
-  const onCreateIncomes = async () => {
-    const result = await db
-      .insert(Incomes)
-      .values({
-        name: name,
-        amount: amount,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        icon: emojiIcon,
-      })
-      .returning({ insertedId: Incomes.id });
+  const validateName = (value) => {
+    if (!value || value.trim() === "") {
+      setNameError("Income source name is required");
+      return false;
+    }
+    if (value.length > 50) {
+      setNameError("Income source name must be less than 50 characters");
+      return false;
+    }
+    setNameError("");
+    return true;
+  };
 
-    if (result) {
-      refreshData();
-      toast("New Income Source Created!");
+  /**
+   * Validate income amount
+   */
+  const validateAmount = (value) => {
+    if (!value || value.trim() === "") {
+      setAmountError("Income amount is required");
+      return false;
+    }
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+      setAmountError("Please enter a valid number");
+      return false;
+    }
+    if (numValue <= 0) {
+      setAmountError("Amount must be greater than 0");
+      return false;
+    }
+    if (numValue > 99999999) {
+      setAmountError("Amount is too large");
+      return false;
+    }
+    setAmountError("");
+    return true;
+  };
+
+  /**
+   * Handle name input change
+   */
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+    if (value) validateName(value);
+  };
+
+  /**
+   * Handle amount input change
+   */
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    setAmount(value);
+    if (value) validateAmount(value);
+  };
+
+  /**
+   * Used to Create New Income Source
+   */
+  const onCreateIncomes = async () => {
+    // Final validation before submission
+    const isNameValid = validateName(name);
+    const isAmountValid = validateAmount(amount);
+
+    if (!isNameValid || !isAmountValid) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+
+    try {
+      const result = await db
+        .insert(Incomes)
+        .values({
+          name: name.trim(),
+          amount: amount,
+          createdBy: user?.primaryEmailAddress?.emailAddress,
+          icon: emojiIcon,
+        })
+        .returning({ insertedId: Incomes.id });
+
+      if (result) {
+        refreshData();
+        toast.success("New Income Source Created!");
+        // Reset form
+        setName("");
+        setAmount("");
+        setNameError("");
+        setAmountError("");
+      }
+    } catch (error) {
+      console.error("Error creating income source:", error);
+      toast.error("Failed to create income source. Please try again.");
     }
   };
   return (
@@ -85,16 +164,28 @@ function CreateIncomes({ refreshData }) {
                   <h2 className="text-black font-medium my-1">Source Name</h2>
                   <Input
                     placeholder="e.g. Youtube"
-                    onChange={(e) => setName(e.target.value)}
+                    value={name}
+                    onChange={handleNameChange}
+                    className={nameError ? "border-red-500" : ""}
                   />
+                  {nameError && (
+                    <p className="text-red-500 text-sm mt-1">{nameError}</p>
+                  )}
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Montly Amount</h2>
+                  <h2 className="text-black font-medium my-1">Monthly Amount</h2>
                   <Input
                     type="number"
-                    placeholder="e.g. 5000$"
-                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="e.g. 5000"
+                    value={amount}
+                    onChange={handleAmountChange}
+                    className={amountError ? "border-red-500" : ""}
+                    min="0"
+                    step="0.01"
                   />
+                  {amountError && (
+                    <p className="text-red-500 text-sm mt-1">{amountError}</p>
+                  )}
                 </div>
               </div>
             </DialogDescription>
@@ -102,7 +193,7 @@ function CreateIncomes({ refreshData }) {
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <Button
-                disabled={!(name && amount)}
+                disabled={!(name && amount) || nameError || amountError}
                 onClick={() => onCreateIncomes()}
                 className="mt-5 w-full rounded-full"
               >
