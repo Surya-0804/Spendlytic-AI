@@ -1,16 +1,23 @@
 "use server";
 import { db } from "../../../../../utils/dbConfig";
-import { Budgets, Expenses } from "../../../../../utils/schema";
+import { Budgets, Expenses, Incomes } from "../../../../../utils/schema";
 import { eq, desc, sql, getTableColumns, and } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getBudgetList() {
+export async function getBudgetList(month = null) {
   const user = await currentUser();
   if (!user || !user.primaryEmailAddress) throw new Error("Unauthorized");
   
   const email = user.primaryEmailAddress.emailAddress;
   
+  let expensesCondition = eq(Budgets.id, Expenses.budgetId);
+  
+  let conditions = [eq(Budgets.createdBy, email)];
+  if (month) {
+    conditions.push(eq(Budgets.month, month));
+  }
+
   const result = await db
     .select({
       ...getTableColumns(Budgets),
@@ -18,8 +25,8 @@ export async function getBudgetList() {
       totalItem: sql`count(${Expenses.id})`.mapWith(Number),
     })
     .from(Budgets)
-    .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-    .where(eq(Budgets.createdBy, email))
+    .leftJoin(Expenses, expensesCondition)
+    .where(and(...conditions))
     .groupBy(Budgets.id)
     .orderBy(desc(Budgets.id));
 
@@ -57,6 +64,7 @@ export async function createBudget(data) {
     amount: data.amount,
     createdBy: email,
     icon: data.icon,
+    month: data.month,
   }).returning({ insertedId: Budgets.id });
 
   revalidatePath("/dashboard/budgets");
@@ -98,4 +106,54 @@ export async function deleteBudget(budgetId) {
 
   revalidatePath("/dashboard/budgets");
   return result;
+}
+
+export async function clonePreviousMonthBudgets(currentMonth, previousMonth) {
+  const user = await currentUser();
+  if (!user || !user.primaryEmailAddress) throw new Error("Unauthorized");
+  
+  const email = user.primaryEmailAddress.emailAddress;
+
+  // Clone budgets
+  const oldBudgets = await db.select().from(Budgets)
+    .where(and(eq(Budgets.createdBy, email), eq(Budgets.month, previousMonth)));
+
+  if (oldBudgets.length > 0) {
+    const newBudgets = oldBudgets.map(b => ({
+      name: b.name,
+      amount: b.amount,
+      icon: b.icon,
+      createdBy: b.createdBy,
+      month: currentMonth
+    }));
+    await db.insert(Budgets).values(newBudgets);
+  }
+
+  revalidatePath("/dashboard/budgets");
+  return true;
+}
+
+export async function getLeftoverBalance(month) {
+  const user = await currentUser();
+  if (!user || !user.primaryEmailAddress) return 0;
+  
+  const email = user.primaryEmailAddress.emailAddress;
+
+  // Get total income for the month
+  const incomeResult = await db.select({
+    total: sql`sum(CAST(${Incomes.amount} AS numeric))`.mapWith(Number)
+  }).from(Incomes).where(and(eq(Incomes.createdBy, email), eq(Incomes.month, month)));
+  
+  const totalIncome = incomeResult[0]?.total || 0;
+
+  // Get total expenses for the month by joining expenses to budgets of that month
+  const expensesResult = await db.select({
+    total: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(Number)
+  }).from(Budgets)
+    .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+    .where(and(eq(Budgets.createdBy, email), eq(Budgets.month, month)));
+    
+  const totalExpenses = expensesResult[0]?.total || 0;
+
+  return totalIncome - totalExpenses;
 }

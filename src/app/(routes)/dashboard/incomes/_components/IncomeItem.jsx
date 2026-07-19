@@ -16,9 +16,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import formatNumber from "../../../../../../utils";
+import { useCurrency } from "@/components/CurrencyProvider";
 
 function IncomeItem({ income, refreshData }) {
+  const { formatCurrency } = useCurrency();
   const onDeleteIncome = async () => {
     try {
       await deleteIncome(income.id);
@@ -32,14 +33,14 @@ function IncomeItem({ income, refreshData }) {
   return (
     <div
       className="p-5 border rounded-2xl flex flex-col justify-between
-    hover:shadow-md h-[170px]"
+    hover:shadow-md h-[170px] dark:border-zinc-800 dark:bg-zinc-900"
     >
       <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-2 items-center">
           <h2
             className="text-2xl p-3 px-4
-              bg-slate-100 rounded-full 
-              "
+              bg-slate-100 dark:bg-zinc-800 rounded-full 
+              text-2xl"
           >
             {income?.icon}
           </h2>
@@ -47,7 +48,7 @@ function IncomeItem({ income, refreshData }) {
             <h2 className="font-bold">{income.name}</h2>
           </div>
         </div>
-        <h2 className="font-bold text-primary text-lg"> {formatNumber(income.amount)}</h2>
+        <h2 className="font-bold text-primary text-lg"> {formatCurrency(income.amount)}</h2>
       </div>
 
       <div className="flex justify-end gap-2 mt-4 pt-4 border-t">

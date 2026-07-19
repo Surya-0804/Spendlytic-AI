@@ -29,19 +29,19 @@ function WelcomeDialog({ isOpen, onOpenChange }) {
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="flex items-start gap-4 p-4 border rounded-lg bg-blue-50/50">
+          <div className="flex items-start gap-4 p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-800/50">
             <PiggyBank className="w-8 h-8 text-blue-500 mt-1" />
             <div>
-              <h3 className="font-semibold text-black">1. Create a Budget</h3>
-              <p className="text-sm text-gray-500">Set limits for your spending categories like Groceries, Rent, and Entertainment.</p>
+              <h3 className="font-semibold text-black dark:text-blue-100">1. Create a Budget</h3>
+              <p className="text-sm text-gray-500 dark:text-blue-200/70">Set limits for your spending categories like Groceries, Rent, and Entertainment.</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-4 p-4 border rounded-lg bg-green-50/50">
+          <div className="flex items-start gap-4 p-4 border rounded-lg bg-green-50/50 dark:bg-green-900/20 dark:border-green-800/50">
             <CircleDollarSign className="w-8 h-8 text-green-500 mt-1" />
             <div>
-              <h3 className="font-semibold text-black">2. Add Incomes</h3>
-              <p className="text-sm text-gray-500">Track your earning sources like Salary, Freelance work, and Investments.</p>
+              <h3 className="font-semibold text-black dark:text-green-100">2. Add Incomes</h3>
+              <p className="text-sm text-gray-500 dark:text-green-200/70">Track your earning sources like Salary, Freelance work, and Investments.</p>
             </div>
           </div>
         </div>

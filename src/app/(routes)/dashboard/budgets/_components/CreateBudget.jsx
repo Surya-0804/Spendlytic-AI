@@ -16,10 +16,13 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { createBudget } from "../../_actions/budgetActions";
 import { budgetSchema } from "@/lib/validations";
+import { useMonth } from "@/components/MonthContext";
+import moment from "moment";
 
 function CreateBudget({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const { selectedMonth } = useMonth();
 
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
@@ -60,6 +63,7 @@ function CreateBudget({ refreshData }) {
         name: name.trim(),
         amount: parseFloat(amount),
         icon: emojiIcon,
+        month: selectedMonth
       });
 
       if (result) {
@@ -81,17 +85,24 @@ function CreateBudget({ refreshData }) {
       <Dialog>
         <DialogTrigger asChild>
           <div
-            className="bg-slate-100 p-10 rounded-2xl
-            items-center flex flex-col border-2 border-dashed
+            className="bg-slate-100 dark:bg-zinc-800 p-10 rounded-2xl
+            items-center flex flex-col border-2 border-dashed dark:border-zinc-700
             cursor-pointer hover:shadow-md"
           >
-            <h2 className="text-3xl">+</h2>
-            <h2>Create New Budget</h2>
+            <h2 className="text-3xl text-gray-500 dark:text-gray-400">+</h2>
+            <h2 className="text-gray-500 dark:text-gray-400 font-medium">Create New Budget</h2>
           </div>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Budget</DialogTitle>
+            <DialogTitle>
+              Create New Budget 
+              {selectedMonth && (
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  (for {moment(selectedMonth).format("MMMM YYYY")})
+                </span>
+              )}
+            </DialogTitle>
             <DialogDescription>
               <div className="mt-5">
                 <Button
@@ -111,7 +122,7 @@ function CreateBudget({ refreshData }) {
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Name</h2>
+                  <h2 className="text-black dark:text-white font-medium my-1">Budget Name</h2>
                   <Input
                     placeholder="e.g. Home Decor"
                     value={name}
@@ -123,7 +134,7 @@ function CreateBudget({ refreshData }) {
                   )}
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Amount</h2>
+                  <h2 className="text-black dark:text-white font-medium my-1">Budget Amount</h2>
                   <Input
                     type="number"
                     placeholder="e.g. 5000"

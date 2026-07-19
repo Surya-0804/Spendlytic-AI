@@ -7,6 +7,8 @@ import {
   PiggyBank,
   ReceiptIndianRupee,
   ShieldCheck,
+  Repeat,
+  Wallet,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -38,6 +40,18 @@ const SideNav = () => {
       icon: ReceiptIndianRupee,
       path: "/dashboard/expenses",
     },
+    {
+      id: 5,
+      name: "Subscriptions",
+      icon: Repeat,
+      path: "/dashboard/subscriptions",
+    },
+    {
+      id: 6,
+      name: "Savings",
+      icon: Wallet,
+      path: "/dashboard/savings",
+    },
     // {
     //   id: 5,
     //   name: "Upgrade",
@@ -49,21 +63,21 @@ const SideNav = () => {
   const path = usePathname();
 
   return (
-    <div className="h-screen p-5 border shadow-sm">
+    <div className="h-screen p-5 border-r shadow-sm bg-white dark:bg-zinc-900 dark:border-zinc-800">
       <div className="flex flex-row items-center">
         <Image src={"/chart-donut.svg"} alt="logo" width={40} height={25} />
-        <span className="text-blue-800 font-bold text-xl">Spendyltic AI</span>
+        <span className="text-blue-800 dark:text-blue-400 font-bold text-xl">Spendyltic AI</span>
       </div>
       <div className="mt-5">
         {menuList.map((menu, index) => (
           <Link href={menu.path} key={index}>
             <h2
               className={`flex gap-2 items-center
-                    text-gray-500 font-medium
+                    text-gray-500 dark:text-gray-400 font-medium
                     mb-2
                     p-4 cursor-pointer rounded-full
-                    hover:text-primary hover:bg-blue-100
-                    ${path == menu.path && "text-primary bg-blue-100"}
+                    hover:text-primary hover:bg-blue-100 dark:hover:bg-zinc-800 dark:hover:text-blue-400
+                    ${path == menu.path && "text-primary bg-blue-100 dark:bg-zinc-800 dark:text-blue-400"}
                     `}
             >
               <menu.icon />
