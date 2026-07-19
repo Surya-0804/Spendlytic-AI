@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { createBudget } from "../../_actions/budgetActions";
 import { budgetSchema } from "@/lib/validations";
 import { useMonth } from "@/components/MonthContext";
+import moment from "moment";
 
 function CreateBudget({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
@@ -94,7 +95,14 @@ function CreateBudget({ refreshData }) {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Budget</DialogTitle>
+            <DialogTitle>
+              Create New Budget 
+              {selectedMonth && (
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  (for {moment(selectedMonth).format("MMMM YYYY")})
+                </span>
+              )}
+            </DialogTitle>
             <DialogDescription>
               <div className="mt-5">
                 <Button

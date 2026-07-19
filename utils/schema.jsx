@@ -15,6 +15,7 @@ export const Budgets = pgTable("budgets", {
   icon: varchar("icon"),
   month: varchar("month").notNull().default("2026-07"),
   createdBy: varchar("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 //schema for income table
@@ -25,6 +26,7 @@ export const Incomes = pgTable("incomes", {
   icon: varchar("icon"),
   month: varchar("month").notNull().default("2026-07"),
   createdBy: varchar("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 //schema for expenses table

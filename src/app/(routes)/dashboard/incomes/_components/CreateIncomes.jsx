@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { createIncome } from "../../_actions/incomeActions";
 import { incomeSchema } from "@/lib/validations";
 import { useMonth } from "@/components/MonthContext";
+import moment from "moment";
 
 function CreateIncomes({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
@@ -93,7 +94,14 @@ function CreateIncomes({ refreshData }) {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Income Source</DialogTitle>
+            <DialogTitle>
+              Create New Income Source 
+              {selectedMonth && (
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  (for {moment(selectedMonth).format("MMMM YYYY")})
+                </span>
+              )}
+            </DialogTitle>
             <DialogDescription>
               <div className="mt-5">
                 <Button
