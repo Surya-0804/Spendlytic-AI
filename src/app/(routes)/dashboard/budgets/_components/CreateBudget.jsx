@@ -16,10 +16,12 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { createBudget } from "../../_actions/budgetActions";
 import { budgetSchema } from "@/lib/validations";
+import { useMonth } from "@/components/MonthContext";
 
 function CreateBudget({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const { selectedMonth } = useMonth();
 
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
@@ -60,6 +62,7 @@ function CreateBudget({ refreshData }) {
         name: name.trim(),
         amount: parseFloat(amount),
         icon: emojiIcon,
+        month: selectedMonth
       });
 
       if (result) {

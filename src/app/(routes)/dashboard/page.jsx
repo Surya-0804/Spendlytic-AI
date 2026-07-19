@@ -7,9 +7,12 @@ import BudgetItem from "./budgets/_components/BudgetItem";
 import ExpenseListTable from "./expenses/_components/ExpensesListTable";
 import WelcomeDialog from "./_components/WelcomeDialog";
 
-import { getBudgetList } from "./_actions/budgetActions";
-import { getIncomeList } from "./_actions/incomeActions";
+import { getBudgetList, clonePreviousMonthBudgets } from "./_actions/budgetActions";
+import { getIncomeList, clonePreviousMonthIncomes } from "./_actions/incomeActions";
 import { getAllExpenses } from "./_actions/expenseActions";
+import { useMonth } from "@/components/MonthContext";
+import moment from "moment";
+import { CopyPlus } from "lucide-react";
 
 const Dashboard = () => {
   const { user } = useUser();
@@ -18,22 +21,22 @@ const Dashboard = () => {
   const [expenseList, setExpenseList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [daysFilter, setDaysFilter] = useState(""); // empty string means All Time
+  const [cloning, setCloning] = useState(false);
+  const { selectedMonth } = useMonth();
 
   useEffect(() => {
-    if (user) {
+    if (user && selectedMonth) {
       loadData();
     }
-  }, [user, daysFilter]);
+  }, [user, selectedMonth]);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const days = daysFilter ? parseInt(daysFilter) : null;
       const [budgets, incomes, expenses] = await Promise.all([
-        getBudgetList(days),
-        getIncomeList(),
-        getAllExpenses(days)
+        getBudgetList(selectedMonth),
+        getIncomeList(selectedMonth),
+        getAllExpenses(selectedMonth)
       ]);
       setBudgetList(budgets);
       setIncomeList(incomes);
@@ -52,11 +55,24 @@ const Dashboard = () => {
 
   const refreshExpenses = async () => {
     try {
-      const days = daysFilter ? parseInt(daysFilter) : null;
-      const expenses = await getAllExpenses(days);
+      const expenses = await getAllExpenses(selectedMonth);
       setExpenseList(expenses);
     } catch(error) {
       console.error(error);
+    }
+  };
+
+  const cloneFromPrevious = async () => {
+    try {
+      setCloning(true);
+      const prevMonth = moment(selectedMonth, "YYYY-MM").subtract(1, 'months').format("YYYY-MM");
+      await clonePreviousMonthBudgets(selectedMonth, prevMonth);
+      await clonePreviousMonthIncomes(selectedMonth, prevMonth);
+      await loadData();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCloning(false);
     }
   };
 
@@ -66,23 +82,8 @@ const Dashboard = () => {
         <div>
           <h2 className="font-bold text-4xl">Hi, {user?.fullName}</h2>
           <p className="text-gray-500">
-            Here's What's happening with your money. Let's manage your money
+            Here's What's happening with your money in {selectedMonth ? moment(selectedMonth).format("MMMM YYYY") : ''}.
           </p>
-        </div>
-        
-        <div className="mt-4 md:mt-0 flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-500">Filter:</label>
-          <select 
-            className="p-2 border rounded-md text-sm outline-none dark:bg-zinc-800"
-            value={daysFilter}
-            onChange={(e) => setDaysFilter(e.target.value)}
-          >
-            <option value="">All Time</option>
-            <option value="7">Last 7 Days</option>
-            <option value="30">Last 30 Days</option>
-            <option value="90">Last 90 Days</option>
-            <option value="365">Last Year</option>
-          </select>
         </div>
       </div>
       
@@ -121,6 +122,16 @@ const Dashboard = () => {
                       Create Budget →
                     </a>
                   </div>
+                  {selectedMonth && (
+                    <button
+                      onClick={cloneFromPrevious}
+                      disabled={cloning}
+                      className="mt-4 flex items-center gap-2 justify-center w-full py-2 px-4 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-sm font-medium transition-colors"
+                    >
+                      <CopyPlus className="w-4 h-4" />
+                      {cloning ? "Cloning..." : "Clone from Prev Month"}
+                    </button>
+                  )}
                 </div>
               )}
         </div>

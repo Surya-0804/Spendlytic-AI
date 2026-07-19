@@ -5,17 +5,15 @@ import { eq, desc, and, gte } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getAllExpenses(days = null) {
+export async function getAllExpenses(month = null) {
   const user = await currentUser();
   if (!user || !user.primaryEmailAddress) throw new Error("Unauthorized");
   
   const email = user.primaryEmailAddress.emailAddress;
   
   let conditions = [eq(Budgets.createdBy, email)];
-  if (days) {
-    const d = new Date();
-    d.setDate(d.getDate() - days);
-    conditions.push(gte(Expenses.createdAt, d));
+  if (month) {
+    conditions.push(eq(Budgets.month, month));
   }
 
   const result = await db

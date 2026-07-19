@@ -13,6 +13,7 @@ export const Budgets = pgTable("budgets", {
   name: varchar("name").notNull(),
   amount: numeric("amount").notNull(),
   icon: varchar("icon"),
+  month: varchar("month").notNull().default("2026-07"),
   createdBy: varchar("createdBy").notNull(),
 });
 
@@ -22,6 +23,7 @@ export const Incomes = pgTable("incomes", {
   name: varchar("name").notNull(),
   amount: numeric("amount").notNull(),
   icon: varchar("icon"),
+  month: varchar("month").notNull().default("2026-07"),
   createdBy: varchar("createdBy").notNull(),
 });
 
