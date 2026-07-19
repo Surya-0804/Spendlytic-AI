@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
+import QuickAdd from "./QuickAdd";
 
 function DashboardHeader() {
   const pathname = usePathname();
@@ -22,9 +23,10 @@ function DashboardHeader() {
   }, [pathname]);
 
   return (
-    <div className="p-5 shadow-sm border-b flex justify-between">
-      <div className="text-xl font-bold pt-1 text-blue-500">{pageName}</div>
-      <div>
+    <div className="p-5 shadow-sm border-b flex justify-between items-center bg-white sticky top-0 z-10">
+      <div className="text-xl font-bold text-blue-600">{pageName}</div>
+      <div className="flex items-center gap-4">
+        <QuickAdd />
         <UserButton afterSignOutUrl="/" />
       </div>
     </div>

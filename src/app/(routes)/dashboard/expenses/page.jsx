@@ -1,11 +1,8 @@
 "use client";
-import { desc, eq } from "drizzle-orm";
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { db } from "../../../../../utils/dbConfig";
 import ExpenseListTable from "./_components/ExpensesListTable";
-import { Budgets, Expenses } from "../../../../../utils/schema";
-import AddExpense from "./_components/AddExpenses";
+import { getAllExpenses } from "../_actions/expenseActions";
 
 function ExpensesScreen() {
   const [expensesList, setExpensesList] = useState([]);
@@ -13,37 +10,22 @@ function ExpensesScreen() {
   const { user } = useUser();
 
   useEffect(() => {
-    user && getAllExpenses();
+    user && loadExpenses();
   }, [user]);
-  /**
-   * Used to get All expenses belong to users
-   */
-  const getAllExpenses = async () => {
+
+  const loadExpenses = async () => {
     try {
       setLoading(true);
-      console.log("Fetching expenses for user:", user?.primaryEmailAddress?.emailAddress);
-      
-      const result = await db
-        .select({
-          id: Expenses.id,
-          name: Expenses.name,
-          amount: Expenses.amount,
-          createdAt: Expenses.createdAt,
-        })
-        .from(Budgets)
-        .rightJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-        .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
-        .orderBy(desc(Expenses.id));
-      
-      console.log("Expenses fetched:", result);
+      const result = await getAllExpenses();
       setExpensesList(result);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching expenses:", error);
       setExpensesList([]);
+    } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="p-10">
       <h2 className="font-bold text-3xl">My Expenses</h2>
@@ -59,7 +41,7 @@ function ExpensesScreen() {
         </div>
       ) : expensesList?.length > 0 ? (
         <ExpenseListTable
-          refreshData={() => getAllExpenses()}
+          refreshData={() => loadExpenses()}
           expensesList={expensesList}
         />
       ) : (

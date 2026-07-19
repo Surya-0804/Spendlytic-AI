@@ -1,122 +1,76 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import CardInfo from "./_components/CardInfo";
-import { getTableColumns, sql, eq, desc } from "drizzle-orm";
-import { Budgets, Expenses, Incomes } from "../../../../utils/schema";
-import { db } from "../../../../utils/dbConfig";
 import BarCharDashboard from "./_components/BarCharDashboard";
 import BudgetItem from "./budgets/_components/BudgetItem";
 import ExpenseListTable from "./expenses/_components/ExpensesListTable";
-// import CardInfo
+import WelcomeDialog from "./_components/WelcomeDialog";
+
+import { getBudgetList } from "./_actions/budgetActions";
+import { getIncomeList } from "./_actions/incomeActions";
+import { getAllExpenses } from "./_actions/expenseActions";
+
 const Dashboard = () => {
   const { user } = useUser();
   const [budgetList, setBudgetList] = useState([]);
   const [incomeList, setIncomeList] = useState([]);
   const [expenseList, setExpenseList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     if (user) {
-      (async () => {
-        await getBudgetList();
-      })();
+      loadData();
     }
   }, [user]);
 
-  const getBudgetList = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      console.log("Dashboard - Fetching budgets for user:", user?.primaryEmailAddress?.emailAddress);
+      const [budgets, incomes, expenses] = await Promise.all([
+        getBudgetList(),
+        getIncomeList(),
+        getAllExpenses()
+      ]);
+      setBudgetList(budgets);
+      setIncomeList(incomes);
+      setExpenseList(expenses);
       
-      const response = await db
-        .select({
-          ...getTableColumns(Budgets),
-          // Cast amount to numeric type before summing
-          totalSpend: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(
-            Number
-          ),
-          totalItem: sql`count(${Expenses.id})`.mapWith(Number),
-        })
-        .from(Budgets)
-        .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-        .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
-        .groupBy(Budgets.id)
-        .orderBy(desc(Budgets.id));
-
-      console.log("Dashboard - Budgets fetched:", response);
-      setBudgetList(response);
-      getAllExpenses();
-      getIncomeList();
-      setLoading(false);
+      // Check if user has no data to show the welcome dialog
+      if (budgets.length === 0 && incomes.length === 0) {
+        setShowWelcome(true);
+      }
     } catch (error) {
-      console.error("Dashboard - Error fetching budgets:", error);
-      setBudgetList([]);
+      console.error("Dashboard - Error loading data:", error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const getAllExpenses = async () => {
-    if (
-      !user ||
-      !user.primaryEmailAddress ||
-      !user.primaryEmailAddress.emailAddress
-    ) {
-      console.error("User email address not available.");
-      return;
-    }
-
+  const refreshExpenses = async () => {
     try {
-      console.log("Dashboard - Fetching expenses for user:", user.primaryEmailAddress.emailAddress);
-      
-      const response = await db
-        .select({
-          id: Expenses.id,
-          name: Expenses.name,
-          amount: Expenses.amount,
-          createdAt: Expenses.createdAt,
-        })
-        .from(Expenses)
-        .where(eq(Expenses.createdBy, user.primaryEmailAddress.emailAddress))
-        .orderBy(desc(Expenses.id));
-
-      console.log("Dashboard - Expenses fetched:", response);
-      setExpenseList(response);
-    } catch (error) {
-      console.error("Dashboard - Error fetching expenses:", error);
+      const expenses = await getAllExpenses();
+      setExpenseList(expenses);
+    } catch(error) {
+      console.error(error);
     }
   };
-  const getIncomeList = async () => {
-    try {
-      console.log("Dashboard - Fetching incomes for user:", user?.primaryEmailAddress?.emailAddress);
-      
-      const response = await db
-        .select({
-          ...getTableColumns(Incomes),
-        })
-        .from(Incomes)
-        .where(eq(Incomes.createdBy, user?.primaryEmailAddress.emailAddress))
-        .orderBy(desc(Incomes.id));
 
-      console.log("Dashboard - Incomes fetched:", response);
-      setIncomeList(response);
-    } catch (error) {
-      console.log("Dashboard - Error in fetching the income list:", error);
-    }
-  };
   return (
     <div className="p-8">
       <h2 className="font-bold text-4xl">Hi, {user?.fullName}</h2>
       <p className="text-gray-500">
         Here's Whats happening with your money. Let's manage your money
       </p>
+      
       <CardInfo budgetList={budgetList} incomeList={incomeList} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 mt-6 gap-5">
         <div className="lg:col-span-2">
           <BarCharDashboard budgetList={budgetList} />
           <ExpenseListTable
-            refreshData={() => getAllExpenses()}
+            refreshData={refreshExpenses}
             expensesList={expenseList}
           />
         </div>
@@ -149,6 +103,7 @@ const Dashboard = () => {
               )}
         </div>
       </div>
+      <WelcomeDialog isOpen={showWelcome} onOpenChange={setShowWelcome} />
     </div>
   );
 };

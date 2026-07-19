@@ -13,12 +13,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import EmojiPicker from "emoji-picker-react";
-import { useUser } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
-import { eq } from "drizzle-orm";
 import { toast } from "sonner";
-import { db } from "../../../../../../utils/dbConfig";
-import { Budgets } from "../../../../../../utils/schema";
+import { editBudget } from "../../_actions/budgetActions";
+import { budgetSchema } from "@/lib/validations";
 
 function EditBudget({ budgetInfo, refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState(budgetInfo?.icon);
@@ -29,8 +27,6 @@ function EditBudget({ budgetInfo, refreshData }) {
   const [nameError, setNameError] = useState("");
   const [amountError, setAmountError] = useState("");
 
-  const { user } = useUser();
-
   useEffect(() => {
     if (budgetInfo) {
       setEmojiIcon(budgetInfo?.icon);
@@ -39,85 +35,41 @@ function EditBudget({ budgetInfo, refreshData }) {
     }
   }, [budgetInfo]);
 
-  /**
-   * Validate budget name
-   */
-  const validateName = (value) => {
-    if (!value || value.trim() === "") {
-      setNameError("Budget name is required");
-      return false;
-    }
-    if (value.length > 50) {
-      setNameError("Budget name must be less than 50 characters");
+  const validate = () => {
+    const result = budgetSchema.safeParse({ name, amount, icon: emojiIcon });
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setNameError(fieldErrors.name?.[0] || "");
+      setAmountError(fieldErrors.amount?.[0] || "");
       return false;
     }
     setNameError("");
-    return true;
-  };
-
-  /**
-   * Validate budget amount
-   */
-  const validateAmount = (value) => {
-    if (!value || value.trim() === "") {
-      setAmountError("Budget amount is required");
-      return false;
-    }
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) {
-      setAmountError("Please enter a valid number");
-      return false;
-    }
-    if (numValue <= 0) {
-      setAmountError("Amount must be greater than 0");
-      return false;
-    }
-    if (numValue > 99999999) {
-      setAmountError("Amount is too large");
-      return false;
-    }
     setAmountError("");
     return true;
   };
 
-  /**
-   * Handle name input change
-   */
   const handleNameChange = (e) => {
-    const value = e.target.value;
-    setName(value);
-    if (value) validateName(value);
+    setName(e.target.value);
+    setNameError("");
   };
 
-  /**
-   * Handle amount input change
-   */
   const handleAmountChange = (e) => {
-    const value = e.target.value;
-    setAmount(value);
-    if (value) validateAmount(value);
+    setAmount(e.target.value);
+    setAmountError("");
   };
 
   const onUpdateBudget = async () => {
-    // Final validation before submission
-    const isNameValid = validateName(name);
-    const isAmountValid = validateAmount(amount);
-
-    if (!isNameValid || !isAmountValid) {
+    if (!validate()) {
       toast.error("Please fix the errors before submitting");
       return;
     }
 
     try {
-      const result = await db
-        .update(Budgets)
-        .set({
-          name: name.trim(),
-          amount: amount,
-          icon: emojiIcon,
-        })
-        .where(eq(Budgets.id, budgetInfo.id))
-        .returning();
+      const result = await editBudget(budgetInfo.id, {
+        name: name.trim(),
+        amount: parseFloat(amount),
+        icon: emojiIcon,
+      });
 
       if (result) {
         refreshData();
@@ -128,6 +80,7 @@ function EditBudget({ budgetInfo, refreshData }) {
       toast.error("Failed to update budget. Please try again.");
     }
   };
+  
   return (
     <div>
       <Dialog>

@@ -1,22 +1,17 @@
-import { eq } from "drizzle-orm";
+"use client";
 import { Trash } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { db } from "../../../../../../utils/dbConfig";
-import { Expenses } from "../../../../../../utils/schema";
+import { deleteExpense as deleteExpenseAction } from "../../_actions/expenseActions";
 
 function ExpenseListTable({ expensesList, refreshData }) {
-  // console.log(expensesList);
   const deleteExpense = async (expense) => {
     try {
-      const result = await db
-        .delete(Expenses)
-        .where(eq(Expenses.id, expense.id))
-        .returning();
+      const result = await deleteExpenseAction(expense.id);
 
-      if (result.length > 0) {
+      if (result && result.length > 0) {
         toast.success("Expense Deleted!");
-        refreshData(); // Refresh data after deletion
+        refreshData();
       } else {
         throw new Error("Failed to delete the expense.");
       }
@@ -39,16 +34,16 @@ function ExpenseListTable({ expensesList, refreshData }) {
           {expensesList.map((expenses) => (
             <div
               key={expenses.id} // Ensure each item has a unique key
-              className="grid grid-cols-4 bg-slate-50 rounded-bl-xl rounded-br-xl p-2"
+              className="grid grid-cols-4 bg-slate-50 border-b p-2 items-center"
             >
               <h2>{expenses.name}</h2>
               <h2>{expenses.amount}</h2>
               <h2>{new Date(expenses.createdAt).toLocaleDateString()}</h2>
               <div
                 onClick={() => deleteExpense(expenses)}
-                className="text-red-500 cursor-pointer"
+                className="text-red-500 cursor-pointer flex items-center gap-1 hover:text-red-700 transition-colors"
               >
-                <Trash className="inline-block" /> Delete
+                <Trash className="w-4 h-4" /> Delete
               </div>
             </div>
           ))}

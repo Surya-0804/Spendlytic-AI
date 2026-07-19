@@ -1,48 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CreateBudget from "./CreateBudget";
-import { desc, eq, getTableColumns, sql } from "drizzle-orm";
 import { useUser } from "@clerk/nextjs";
 import BudgetItem from "./BudgetItem";
-import { db } from "../../../../../../utils/dbConfig";
-import { Budgets, Expenses } from "../../../../../../utils/schema";
+import { getBudgetList } from "../../_actions/budgetActions";
 
 function BudgetList() {
   const [budgetList, setBudgetList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
   useEffect(() => {
-    user && getBudgetList();
+    user && loadBudgets();
   }, [user]);
-  /**
-   * used to get budget List
-   */
-  const getBudgetList = async () => {
+
+  const loadBudgets = async () => {
     try {
       setLoading(true);
-      console.log("Fetching budgets for user:", user?.primaryEmailAddress?.emailAddress);
-      
-      const result = await db
-        .select({
-          ...getTableColumns(Budgets),
-          // Casting Expenses.amount to numeric before summing
-          totalSpend: sql`SUM(CAST(${Expenses.amount} AS numeric))`.mapWith(
-            Number
-          ),
-          totalItem: sql`COUNT(${Expenses.id})`.mapWith(Number),
-        })
-        .from(Budgets)
-        .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-        .where(eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress))
-        .groupBy(Budgets.id)
-        .orderBy(desc(Budgets.id));
-
-      console.log("Budgets fetched:", result);
+      const result = await getBudgetList();
       setBudgetList(result);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching budgets:", error);
       setBudgetList([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -53,7 +32,7 @@ function BudgetList() {
         className="grid grid-cols-1
         md:grid-cols-2 lg:grid-cols-3 gap-5"
       >
-        <CreateBudget refreshData={() => getBudgetList()} />
+        <CreateBudget refreshData={() => loadBudgets()} />
         {loading
           ? [1, 2, 3, 4, 5].map((item, index) => (
               <div
