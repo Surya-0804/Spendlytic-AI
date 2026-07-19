@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Hero = () => {
   return (
-    <section className="bg-gray-50 flex items-center flex-col pt-0 mt-0">
+    <section className="bg-gray-50 dark:bg-zinc-950 flex items-center flex-col pt-0 mt-0">
       {/* Remove margin-top */}
       <div className="flex flex-col overflow-hidden mt-0">
         {/* Remove margin-top */}

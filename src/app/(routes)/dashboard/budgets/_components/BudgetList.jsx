@@ -37,7 +37,7 @@ function BudgetList() {
           ? [1, 2, 3, 4, 5].map((item, index) => (
               <div
                 key={index}
-                className="w-full bg-slate-200 dark:bg-slate-800 rounded-lg
+                className="w-full bg-slate-200 dark:bg-zinc-800 rounded-lg
         h-[150px] animate-pulse"
               ></div>
             ))

@@ -33,14 +33,14 @@ function IncomeItem({ income, refreshData }) {
   return (
     <div
       className="p-5 border rounded-2xl flex flex-col justify-between
-    hover:shadow-md h-[170px] dark:border-slate-800 dark:bg-slate-900"
+    hover:shadow-md h-[170px] dark:border-zinc-800 dark:bg-zinc-900"
     >
       <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-2 items-center">
           <h2
             className="text-2xl p-3 px-4
-              bg-slate-100 rounded-full 
-              "
+              bg-slate-100 dark:bg-zinc-800 rounded-full 
+              text-2xl"
           >
             {income?.icon}
           </h2>

@@ -60,7 +60,7 @@ function CreateSubscription({ refreshData }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="bg-slate-100 dark:bg-slate-800 p-10 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed dark:border-slate-700 cursor-pointer hover:shadow-md h-[180px]">
+        <div className="bg-slate-100 dark:bg-zinc-800 p-10 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed dark:border-zinc-700 cursor-pointer hover:shadow-md h-[180px]">
           <h2 className="text-3xl font-bold text-gray-500 dark:text-gray-400">+</h2>
           <h2 className="text-gray-500 dark:text-gray-400 font-medium">New Subscription</h2>
         </div>
@@ -94,7 +94,7 @@ function CreateSubscription({ refreshData }) {
               <div>
                 <h2 className="text-black dark:text-white font-medium my-1">Frequency</h2>
                 <select 
-                  className={`w-full p-2 border rounded-md dark:bg-slate-900 dark:border-slate-700 ${errors.frequency ? "border-red-500" : ""}`}
+                  className={`w-full p-2 border rounded-md dark:bg-zinc-900 dark:border-zinc-700 ${errors.frequency ? "border-red-500" : ""}`}
                   value={frequency}
                   onChange={(e) => setFrequency(e.target.value)}
                 >

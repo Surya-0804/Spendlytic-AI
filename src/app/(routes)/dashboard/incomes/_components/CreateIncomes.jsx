@@ -80,8 +80,8 @@ function CreateIncomes({ refreshData }) {
       <Dialog>
         <DialogTrigger asChild>
           <div
-            className="bg-slate-100 dark:bg-slate-800 p-10 rounded-2xl
-            items-center flex flex-col border-2 border-dashed dark:border-slate-700
+            className="bg-slate-100 dark:bg-zinc-800 p-10 rounded-2xl
+            items-center flex flex-col border-2 border-dashed dark:border-zinc-700
             cursor-pointer hover:shadow-md"
           >
             <h2 className="text-3xl text-gray-500 dark:text-gray-400">+</h2>

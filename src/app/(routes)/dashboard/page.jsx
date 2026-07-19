@@ -73,7 +73,7 @@ const Dashboard = () => {
         <div className="mt-4 md:mt-0 flex items-center gap-2">
           <label className="text-sm font-medium text-gray-500">Filter:</label>
           <select 
-            className="p-2 border rounded-md text-sm outline-none dark:bg-slate-800"
+            className="p-2 border rounded-md text-sm outline-none dark:bg-zinc-800"
             value={daysFilter}
             onChange={(e) => setDaysFilter(e.target.value)}
           >
@@ -102,7 +102,7 @@ const Dashboard = () => {
             ? [1, 2, 3, 4].map((items, index) => (
                 <div
                   key={index}
-                  className="h-[180px] w-full bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse"
+                  className="h-[180px] w-full bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse"
                 ></div>
               ))
             : budgetList?.length > 0

@@ -115,7 +115,7 @@ function ExpensesScreen({ params }) {
           <BudgetItem budget={budgetInfo} />
         ) : (
           <div
-            className="h-[150px] w-full bg-slate-200 dark:bg-slate-800
+            className="h-[150px] w-full bg-slate-200 dark:bg-zinc-800
             rounded-lg animate-pulse"
           ></div>
         )}

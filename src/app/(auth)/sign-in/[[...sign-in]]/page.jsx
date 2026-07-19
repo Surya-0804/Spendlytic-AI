@@ -1,8 +1,12 @@
+"use client";
 import { SignIn } from "@clerk/nextjs";
+import { useTheme } from "next-themes";
+import { dark } from "@clerk/themes";
 
 export default function Page() {
+  const { resolvedTheme } = useTheme();
   return (
-    <section className="bg-white">
+    <section className="bg-white dark:bg-zinc-950">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
         <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
           <img
@@ -16,8 +20,8 @@ export default function Page() {
           <div className="max-w-xl lg:max-w-3xl">
             <div className="relative -mt-16 block lg:hidden">
               <a
-                className="inline-flex size-16 items-center justify-center rounded-full bg-white text-blue-600 sm:size-20"
-                href="#"
+                className="inline-flex size-16 items-center justify-center rounded-full bg-white dark:bg-zinc-900 text-blue-600 dark:text-blue-400 sm:size-20"
+                href="/"
               >
                 <span className="sr-only">Home</span>
                 <svg
@@ -33,8 +37,8 @@ export default function Page() {
                 </svg>
               </a>
 
-              <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-                Welcome to Expense Tracker 🦑
+              <h1 className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl md:text-4xl">
+                Welcome to Spendlytic AI 🦑
               </h1>
 
               <p className="mt-4 leading-relaxed text-gray-500">
@@ -43,7 +47,11 @@ export default function Page() {
               </p>
             </div>
 
-            <SignIn />
+            <SignIn 
+              appearance={{
+                baseTheme: resolvedTheme === "dark" ? dark : undefined,
+              }}
+            />
           </div>
         </main>
       </div>

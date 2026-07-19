@@ -35,7 +35,7 @@ function ExpensesScreen() {
           {[1, 2, 3].map((item, index) => (
             <div
               key={index}
-              className="w-full bg-slate-200 dark:bg-slate-800 rounded-lg h-[60px] mb-3 animate-pulse"
+              className="w-full bg-slate-200 dark:bg-zinc-800 rounded-lg h-[60px] mb-3 animate-pulse"
             ></div>
           ))}
         </div>

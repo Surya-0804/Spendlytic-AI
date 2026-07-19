@@ -52,11 +52,11 @@ function SubscriptionsPage() {
         
         {loading ? (
           [1, 2, 3].map((item) => (
-            <div key={item} className="h-[180px] w-full bg-slate-200 dark:bg-slate-800 animate-pulse rounded-2xl"></div>
+            <div key={item} className="h-[180px] w-full bg-slate-200 dark:bg-zinc-800 animate-pulse rounded-2xl"></div>
           ))
         ) : subscriptions.length > 0 ? (
           subscriptions.map((sub) => (
-            <div key={sub.id} className="p-5 border rounded-2xl hover:shadow-md h-[180px] flex flex-col justify-between dark:border-slate-800 dark:bg-slate-900">
+            <div key={sub.id} className="p-5 border rounded-2xl hover:shadow-md h-[180px] flex flex-col justify-between dark:border-zinc-800 dark:bg-zinc-900">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="font-bold text-xl">{sub.name}</h2>
@@ -64,7 +64,7 @@ function SubscriptionsPage() {
                 </div>
                 <h2 className="font-bold text-primary text-xl">{formatCurrency(sub.amount)}</h2>
               </div>
-              <div className="flex items-center justify-between mt-4 pt-4 border-t dark:border-slate-700">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t dark:border-zinc-700">
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <CalendarDays className="w-4 h-4" />
                   <span>Next: {new Date(sub.nextPaymentDate).toLocaleDateString()}</span>

@@ -27,7 +27,7 @@ function ExpenseListTable({ expensesList, refreshData }) {
       <h2 className="font-bold text-lg">Latest Expenses</h2>
       {expensesList && expensesList.length > 0 ? (
         <>
-          <div className="grid grid-cols-4 rounded-tl-xl rounded-tr-xl bg-slate-200 dark:bg-slate-800 p-2 mt-3">
+          <div className="grid grid-cols-4 rounded-tl-xl rounded-tr-xl bg-slate-200 dark:bg-zinc-800 p-2 mt-3">
             <h2 className="font-bold">Name</h2>
             <h2 className="font-bold">Amount</h2>
             <h2 className="font-bold">Date</h2>
@@ -36,7 +36,7 @@ function ExpenseListTable({ expensesList, refreshData }) {
           {expensesList.map((expenses) => (
             <div
               key={expenses.id} // Ensure each item has a unique key
-              className="grid grid-cols-4 bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-800 p-2 items-center"
+              className="grid grid-cols-4 bg-slate-50 dark:bg-zinc-900 border-b dark:border-zinc-800 p-2 items-center"
             >
               <h2>{expenses.name}</h2>
               <h2>{formatCurrency(expenses.amount)}</h2>

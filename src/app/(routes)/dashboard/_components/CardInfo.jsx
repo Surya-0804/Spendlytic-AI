@@ -107,7 +107,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
     <div>
       {budgetList?.length > 0 ? (
         <div>
-          <div className="p-7 mt-4 -mb-1 rounded-2xl flex items-center justify-between bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 shadow-sm border border-indigo-100 dark:border-slate-800 relative overflow-hidden">
+          <div className="p-7 mt-4 -mb-1 rounded-2xl flex items-center justify-between bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900 shadow-sm border border-indigo-100 dark:border-zinc-800 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -z-10"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -z-10"></div>
             
@@ -123,7 +123,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
                 
                 <button 
                   onClick={() => fetchFinancialAdvice(true)}
-                  className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 text-sm bg-indigo-100 hover:bg-indigo-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-full transition-colors"
+                  className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 text-sm bg-indigo-100 hover:bg-indigo-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 px-3 py-1.5 rounded-full transition-colors"
                 >
                   <RefreshCcw className="w-4 h-4" />
                   <span className="hidden sm:inline">Refresh</span>
@@ -131,20 +131,20 @@ const CardInfo = ({ budgetList, incomeList }) => {
               </div>
               
               {financialAdvice ? (
-                <h2 className="font-medium text-slate-700 dark:text-slate-300 leading-relaxed text-sm md:text-base">
+                <h2 className="font-medium text-slate-700 dark:text-zinc-300 leading-relaxed text-sm md:text-base">
                   {financialAdvice}
                 </h2>
               ) : (
                 <div className="space-y-2 w-full mt-2">
-                  <div className="h-4 bg-indigo-100 dark:bg-slate-700 rounded animate-pulse w-full"></div>
-                  <div className="h-4 bg-indigo-100 dark:bg-slate-700 rounded animate-pulse w-5/6"></div>
+                  <div className="h-4 bg-indigo-100 dark:bg-zinc-800 rounded animate-pulse w-full"></div>
+                  <div className="h-4 bg-indigo-100 dark:bg-zinc-800 rounded animate-pulse w-5/6"></div>
                 </div>
               )}
             </div>
           </div>
 
           <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-slate-800 dark:bg-slate-900">
+            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-zinc-800 dark:bg-zinc-900">
               <div>
                 <h2 className="text-sm">Total Budget</h2>
                 <h2 className="font-bold text-2xl">
@@ -153,7 +153,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
               </div>
               <PiggyBank className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-slate-800 dark:bg-slate-900">
+            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-zinc-800 dark:bg-zinc-900">
               <div>
                 <h2 className="text-sm">Total Spend</h2>
                 <h2 className="font-bold text-2xl">
@@ -162,14 +162,14 @@ const CardInfo = ({ budgetList, incomeList }) => {
               </div>
               <ReceiptText className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-slate-800 dark:bg-slate-900">
+            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-zinc-800 dark:bg-zinc-900">
               <div>
                 <h2 className="text-sm">No. Of Budget</h2>
                 <h2 className="font-bold text-2xl">{budgetList?.length}</h2>
               </div>
               <Wallet className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-slate-800 dark:bg-slate-900">
+            <div className="p-7 border rounded-2xl flex items-center justify-between dark:border-zinc-800 dark:bg-zinc-900">
               <div>
                 <h2 className="text-sm">Sum of Income Streams</h2>
                 <h2 className="font-bold text-2xl">
@@ -178,7 +178,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
               </div>
               <CircleDollarSign className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between bg-blue-50 dark:bg-slate-800 dark:border-slate-800">
+            <div className="p-7 border rounded-2xl flex items-center justify-between bg-blue-50 dark:bg-zinc-800 dark:border-zinc-800">
               <div>
                 <h2 className="text-sm">Remaining Balance</h2>
                 <h2 className={`font-bold text-2xl ${totalIncome - totalSpend < 0 ? 'text-red-500' : 'text-green-600'}`}>
@@ -193,7 +193,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
         <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1, 2, 3].map((item, index) => (
             <div
-              className="h-[110px] w-full bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg"
+              className="h-[110px] w-full bg-slate-200 dark:bg-zinc-800 animate-pulse rounded-lg"
               key={index}
             ></div>
           ))}
