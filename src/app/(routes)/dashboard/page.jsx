@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [budgetList, setBudgetList] = useState([]);
   const [incomeList, setIncomeList] = useState([]);
   const [expenseList, setExpenseList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -24,24 +25,35 @@ const Dashboard = () => {
   }, [user]);
 
   const getBudgetList = async () => {
-    const response = await db
-      .select({
-        ...getTableColumns(Budgets),
-        // Cast amount to numeric type before summing
-        totalSpend: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(
-          Number
-        ),
-        totalItem: sql`count(${Expenses.id})`.mapWith(Number),
-      })
-      .from(Budgets)
-      .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-      .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
-      .groupBy(Budgets.id)
-      .orderBy(desc(Budgets.id));
+    try {
+      setLoading(true);
+      console.log("Dashboard - Fetching budgets for user:", user?.primaryEmailAddress?.emailAddress);
+      
+      const response = await db
+        .select({
+          ...getTableColumns(Budgets),
+          // Cast amount to numeric type before summing
+          totalSpend: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(
+            Number
+          ),
+          totalItem: sql`count(${Expenses.id})`.mapWith(Number),
+        })
+        .from(Budgets)
+        .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+        .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
+        .groupBy(Budgets.id)
+        .orderBy(desc(Budgets.id));
 
-    setBudgetList(response);
-    getAllExpenses();
-    getIncomeList();
+      console.log("Dashboard - Budgets fetched:", response);
+      setBudgetList(response);
+      getAllExpenses();
+      getIncomeList();
+      setLoading(false);
+    } catch (error) {
+      console.error("Dashboard - Error fetching budgets:", error);
+      setBudgetList([]);
+      setLoading(false);
+    }
   };
 
   const getAllExpenses = async () => {
@@ -55,6 +67,8 @@ const Dashboard = () => {
     }
 
     try {
+      console.log("Dashboard - Fetching expenses for user:", user.primaryEmailAddress.emailAddress);
+      
       const response = await db
         .select({
           id: Expenses.id,
@@ -66,27 +80,28 @@ const Dashboard = () => {
         .where(eq(Expenses.createdBy, user.primaryEmailAddress.emailAddress))
         .orderBy(desc(Expenses.id));
 
-      // console.log("Expenses fetched:", JSON.stringify(response, null, 2)); // Add this detailed log
+      console.log("Dashboard - Expenses fetched:", response);
       setExpenseList(response);
     } catch (error) {
-      console.error("Error fetching expenses:", error);
+      console.error("Dashboard - Error fetching expenses:", error);
     }
   };
   const getIncomeList = async () => {
     try {
+      console.log("Dashboard - Fetching incomes for user:", user?.primaryEmailAddress?.emailAddress);
+      
       const response = await db
         .select({
           ...getTableColumns(Incomes),
-          totalAmount: sql`sum(cast(${Incomes.amount} as numeric))`.mapWith(
-            Number
-          ),
         })
         .from(Incomes)
-        .groupBy(Incomes.id);
+        .where(eq(Incomes.createdBy, user?.primaryEmailAddress.emailAddress))
+        .orderBy(desc(Incomes.id));
 
+      console.log("Dashboard - Incomes fetched:", response);
       setIncomeList(response);
     } catch (error) {
-      console.log("Error in fetching the income list:", error);
+      console.log("Dashboard - Error in fetching the income list:", error);
     }
   };
   return (
@@ -107,16 +122,31 @@ const Dashboard = () => {
         </div>
         <div className="grid gap-5">
           <h2 className="font-bold text-lg">Latest Budgets</h2>
-          {budgetList?.length > 0
+          {loading
+            ? [1, 2, 3, 4].map((items, index) => (
+                <div
+                  key={index}
+                  className="h-[180px] w-full bg-slate-200 rounded-lg animate-pulse"
+                ></div>
+              ))
+            : budgetList?.length > 0
             ? budgetList.map((budget, index) => (
                 <BudgetItem budget={budget} key={index} />
               ))
-            : [1, 2, 3, 4].map((items, index) => (
-                <div
-                  key={index}
-                  className="h-[180px] w-full bg-slate-200 lg animate-pulse"
-                ></div>
-              ))}
+            : (
+                <div className="text-center p-8 border-2 border-dashed rounded-lg">
+                  <div className="text-gray-400">
+                    <h3 className="text-lg font-semibold mb-1">No Budgets</h3>
+                    <p className="text-xs mb-3">Create your first budget!</p>
+                    <a
+                      href="/dashboard/budgets"
+                      className="text-blue-600 text-sm hover:underline"
+                    >
+                      Create Budget →
+                    </a>
+                  </div>
+                </div>
+              )}
         </div>
       </div>
     </div>
