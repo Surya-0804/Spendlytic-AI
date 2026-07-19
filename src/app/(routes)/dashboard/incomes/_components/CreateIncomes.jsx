@@ -80,12 +80,12 @@ function CreateIncomes({ refreshData }) {
       <Dialog>
         <DialogTrigger asChild>
           <div
-            className="bg-slate-100 p-10 rounded-2xl
-            items-center flex flex-col border-2 border-dashed
+            className="bg-slate-100 dark:bg-slate-800 p-10 rounded-2xl
+            items-center flex flex-col border-2 border-dashed dark:border-slate-700
             cursor-pointer hover:shadow-md"
           >
-            <h2 className="text-3xl">+</h2>
-            <h2>Create New Income Source</h2>
+            <h2 className="text-3xl text-gray-500 dark:text-gray-400">+</h2>
+            <h2 className="text-gray-500 dark:text-gray-400 font-medium">Create New Income Source</h2>
           </div>
         </DialogTrigger>
         <DialogContent>
@@ -110,7 +110,7 @@ function CreateIncomes({ refreshData }) {
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Source Name</h2>
+                  <h2 className="text-black dark:text-white font-medium my-1">Source Name</h2>
                   <Input
                     placeholder="e.g. Youtube"
                     value={name}
@@ -122,7 +122,7 @@ function CreateIncomes({ refreshData }) {
                   )}
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Monthly Amount</h2>
+                  <h2 className="text-black dark:text-white font-medium my-1">Monthly Amount</h2>
                   <Input
                     type="number"
                     placeholder="e.g. 5000"

@@ -18,20 +18,22 @@ const Dashboard = () => {
   const [expenseList, setExpenseList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [daysFilter, setDaysFilter] = useState(""); // empty string means All Time
 
   useEffect(() => {
     if (user) {
       loadData();
     }
-  }, [user]);
+  }, [user, daysFilter]);
 
   const loadData = async () => {
     try {
       setLoading(true);
+      const days = daysFilter ? parseInt(daysFilter) : null;
       const [budgets, incomes, expenses] = await Promise.all([
-        getBudgetList(),
+        getBudgetList(days),
         getIncomeList(),
-        getAllExpenses()
+        getAllExpenses(days)
       ]);
       setBudgetList(budgets);
       setIncomeList(incomes);
@@ -50,7 +52,8 @@ const Dashboard = () => {
 
   const refreshExpenses = async () => {
     try {
-      const expenses = await getAllExpenses();
+      const days = daysFilter ? parseInt(daysFilter) : null;
+      const expenses = await getAllExpenses(days);
       setExpenseList(expenses);
     } catch(error) {
       console.error(error);
@@ -59,10 +62,29 @@ const Dashboard = () => {
 
   return (
     <div className="p-8">
-      <h2 className="font-bold text-4xl">Hi, {user?.fullName}</h2>
-      <p className="text-gray-500">
-        Here's Whats happening with your money. Let's manage your money
-      </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+        <div>
+          <h2 className="font-bold text-4xl">Hi, {user?.fullName}</h2>
+          <p className="text-gray-500">
+            Here's What's happening with your money. Let's manage your money
+          </p>
+        </div>
+        
+        <div className="mt-4 md:mt-0 flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-500">Filter:</label>
+          <select 
+            className="p-2 border rounded-md text-sm outline-none dark:bg-slate-800"
+            value={daysFilter}
+            onChange={(e) => setDaysFilter(e.target.value)}
+          >
+            <option value="">All Time</option>
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+            <option value="365">Last Year</option>
+          </select>
+        </div>
+      </div>
       
       <CardInfo budgetList={budgetList} incomeList={incomeList} />
 
@@ -80,7 +102,7 @@ const Dashboard = () => {
             ? [1, 2, 3, 4].map((items, index) => (
                 <div
                   key={index}
-                  className="h-[180px] w-full bg-slate-200 rounded-lg animate-pulse"
+                  className="h-[180px] w-full bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse"
                 ></div>
               ))
             : budgetList?.length > 0

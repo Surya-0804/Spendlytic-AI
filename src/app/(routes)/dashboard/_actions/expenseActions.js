@@ -1,17 +1,23 @@
 "use server";
 import { db } from "../../../../../utils/dbConfig";
 import { Budgets, Expenses } from "../../../../../utils/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, gte } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getAllExpenses() {
+export async function getAllExpenses(days = null) {
   const user = await currentUser();
   if (!user || !user.primaryEmailAddress) throw new Error("Unauthorized");
   
   const email = user.primaryEmailAddress.emailAddress;
   
-  // Gets all expenses across all budgets for the user
+  let conditions = [eq(Budgets.createdBy, email)];
+  if (days) {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    conditions.push(gte(Expenses.createdAt, d));
+  }
+
   const result = await db
     .select({
       id: Expenses.id,
@@ -22,7 +28,7 @@ export async function getAllExpenses() {
     })
     .from(Budgets)
     .rightJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-    .where(eq(Budgets.createdBy, email))
+    .where(and(...conditions))
     .orderBy(desc(Expenses.id));
 
   return result;

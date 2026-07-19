@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import QuickAdd from "./QuickAdd";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { CurrencyToggle } from "@/components/CurrencyToggle";
 
 function DashboardHeader() {
   const pathname = usePathname();
@@ -23,9 +25,11 @@ function DashboardHeader() {
   }, [pathname]);
 
   return (
-    <div className="p-5 shadow-sm border-b flex justify-between items-center bg-white sticky top-0 z-10">
-      <div className="text-xl font-bold text-blue-600">{pageName}</div>
+    <div className="p-5 shadow-sm border-b flex justify-between items-center bg-white dark:bg-slate-900 dark:border-slate-800 sticky top-0 z-10">
+      <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{pageName}</div>
       <div className="flex items-center gap-4">
+        <CurrencyToggle />
+        <ThemeToggle />
         <QuickAdd />
         <UserButton afterSignOutUrl="/" />
       </div>

@@ -1,16 +1,23 @@
 "use server";
 import { db } from "../../../../../utils/dbConfig";
 import { Budgets, Expenses } from "../../../../../utils/schema";
-import { eq, desc, sql, getTableColumns, and } from "drizzle-orm";
+import { eq, desc, sql, getTableColumns, and, gte } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export async function getBudgetList() {
+export async function getBudgetList(days = null) {
   const user = await currentUser();
   if (!user || !user.primaryEmailAddress) throw new Error("Unauthorized");
   
   const email = user.primaryEmailAddress.emailAddress;
   
+  let expensesCondition = eq(Budgets.id, Expenses.budgetId);
+  if (days) {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    expensesCondition = and(eq(Budgets.id, Expenses.budgetId), gte(Expenses.createdAt, d));
+  }
+
   const result = await db
     .select({
       ...getTableColumns(Budgets),
@@ -18,7 +25,7 @@ export async function getBudgetList() {
       totalItem: sql`count(${Expenses.id})`.mapWith(Number),
     })
     .from(Budgets)
-    .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+    .leftJoin(Expenses, expensesCondition)
     .where(eq(Budgets.createdBy, email))
     .groupBy(Budgets.id)
     .orderBy(desc(Budgets.id));

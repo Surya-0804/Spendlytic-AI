@@ -34,3 +34,14 @@ export const Expenses = pgTable("expenses", {
   createdBy: varchar("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
+
+//schema for subscriptions table
+export const Subscriptions = pgTable("subscriptions", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  amount: numeric("amount").notNull(),
+  frequency: varchar("frequency").notNull(), // 'Weekly', 'Monthly', 'Yearly'
+  nextPaymentDate: timestamp("nextPaymentDate").notNull(),
+  createdBy: varchar("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
