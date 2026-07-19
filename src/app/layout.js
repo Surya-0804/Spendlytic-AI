@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
         <CurrencyProvider>
           <ThemeProvider
               attribute="class"
-              defaultTheme="system"
+              defaultTheme="light"
               enableSystem
               disableTransitionOnChange
             >
