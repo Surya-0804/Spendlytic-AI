@@ -24,9 +24,11 @@ Welcome to the Spendlytic AI project. This document provides essential context, 
 
 ## 3. Database Schema Overview
 The data layer currently consists of three primary entities (defined in `utils/schema.jsx`):
-- `Budgets`: User-defined budgets (name, amount, icon).
-- `Incomes`: User-defined income streams (name, amount, icon).
+- `Budgets`: User-defined budgets (name, amount, icon, month, createdAt).
+- `Incomes`: User-defined income streams (name, amount, icon, month, createdAt).
 - `Expenses`: User expenses, linked to specific budgets via `budgetId`.
+
+**Note on Time Scoping:** The app uses Monthly Cycles. Budgets and Incomes have a `month` field (e.g. `2026-07`). Expenses are intrinsically linked to the month of the Budget they belong to. When writing queries or adding features, ensure they respect the globally selected month (typically stored in `MonthContext` or passed as a `month` string).
 
 ## 4. STRICT RULES & INSTRUCTIONS FOR AGENTS
 

@@ -1,7 +1,7 @@
 "use server";
 import { db } from "../../../../../utils/dbConfig";
-import { Budgets, Expenses } from "../../../../../utils/schema";
-import { eq, desc, sql, getTableColumns, and, gte } from "drizzle-orm";
+import { Budgets, Expenses, Incomes } from "../../../../../utils/schema";
+import { eq, desc, sql, getTableColumns, and } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -131,4 +131,29 @@ export async function clonePreviousMonthBudgets(currentMonth, previousMonth) {
 
   revalidatePath("/dashboard/budgets");
   return true;
+}
+
+export async function getLeftoverBalance(month) {
+  const user = await currentUser();
+  if (!user || !user.primaryEmailAddress) return 0;
+  
+  const email = user.primaryEmailAddress.emailAddress;
+
+  // Get total income for the month
+  const incomeResult = await db.select({
+    total: sql`sum(CAST(${Incomes.amount} AS numeric))`.mapWith(Number)
+  }).from(Incomes).where(and(eq(Incomes.createdBy, email), eq(Incomes.month, month)));
+  
+  const totalIncome = incomeResult[0]?.total || 0;
+
+  // Get total expenses for the month by joining expenses to budgets of that month
+  const expensesResult = await db.select({
+    total: sql`sum(CAST(${Expenses.amount} AS numeric))`.mapWith(Number)
+  }).from(Budgets)
+    .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+    .where(and(eq(Budgets.createdBy, email), eq(Budgets.month, month)));
+    
+  const totalExpenses = expensesResult[0]?.total || 0;
+
+  return totalIncome - totalExpenses;
 }

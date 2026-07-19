@@ -8,6 +8,7 @@ import {
   ReceiptIndianRupee,
   ShieldCheck,
   Repeat,
+  Wallet,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -44,6 +45,12 @@ const SideNav = () => {
       name: "Subscriptions",
       icon: Repeat,
       path: "/dashboard/subscriptions",
+    },
+    {
+      id: 6,
+      name: "Savings",
+      icon: Wallet,
+      path: "/dashboard/savings",
     },
     // {
     //   id: 5,

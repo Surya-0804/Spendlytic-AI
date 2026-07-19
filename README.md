@@ -1,52 +1,50 @@
 # Spendlytic AI ![Spendlytic AI Logo](/public/chart-donut.svg)
 
-Spendlytic AI is an AI-powered finance analyzer that helps users manage their finances by providing intelligent insights on their spending habits. Built using Next.js, this app allows users to input their income, allocate budgets, and track expenses. The project leverages Gemini AI to offer personalized financial advice.
+Spendlytic AI is a modern, AI-powered personal finance tracker and analyzer. It goes beyond simple expense logging by offering a complete month-to-month tracking system, subscription management, and intelligent financial insights powered by Google's Gemini AI. Designed with an ultra-premium, dark-mode-first aesthetic, Spendlytic AI is built for those who want both power and beauty in their financial tools.
 
-![Spendlytic AI Landing Page](/public/landing.png)
 ![Spendlytic AI Dashboard](/public/dashboard.png)
 
-## Features
+## Core Features
 
-- Enter and track income, budgets, and expenses
-- Get AI-driven financial advice using Gemini AI
-- Secure authentication with Clerk
-- Responsive and sleek UI with ShadCN and Tailwind CSS
-- Data persistence using Drizzle and Neon DB
+- **Monthly Cycles & Rollover:** Financial tracking is scoped month-to-month. Easily view past months and seamlessly "clone" your budgets and income streams into a new month with a single click. Choose what happens to your leftover money (rollover or savings!).
+- **Income Streams:** Track multiple sources of income (salary, side hustles, dividends) categorized for each month.
+- **Budgeting & Expenses:** Create strict budgets for specific categories (e.g., Groceries, Entertainment) and log expenses against them. Visual progress bars instantly show you how close you are to your limits.
+- **Subscription Management:** Never forget a recurring payment. Track all your weekly, monthly, and yearly subscriptions in one place, complete with upcoming payment dates.
+- **AI Financial Advisor:** Click the "AI Advice" button on your dashboard to send your current month's financial footprint (incomes, budgets, expenses) to Gemini AI, which instantly responds with personalized tips and warnings.
+- **Dynamic True Dark Mode:** A sleek, fully integrated dark mode that respects your system preferences but defaults to a premium light theme. 
+- **Global Currency Toggle:** Instantly switch the entire application between USD ($) and INR (₹).
 
 ## Technologies Used
 
-- **Next.js** - React framework for building the web app
-- **Clerk** - Authentication and user management
-- **ShadCN** - Prebuilt UI components
-- **Tailwind CSS** - Utility-first CSS framework for styling
-- **Drizzle** - ORM for interacting with Neon DB
-- **Neon DB** - Database to store user income, budget, and expense data
-- **Gemini AI** - Provides intelligent financial advice
+- **Framework:** Next.js 14 (App Router)
+- **Database:** Neon DB (Serverless Postgres)
+- **ORM:** Drizzle ORM
+- **Authentication:** Clerk (`@clerk/nextjs`)
+- **Styling:** Tailwind CSS, ShadCN UI, Lucide React
+- **Animations:** Framer Motion, Recharts for data visualization
+- **AI Integration:** Google Generative AI (Gemini SDK)
 
 ## Screenshots
 
-### Landing Page
-
-![Spendlytic AI Landing Page](/public/landing.png)
-
 ### Dashboard
-
+The central hub for your monthly finances, featuring AI integration and high-level charts.
 ![Spendlytic AI Dashboard](/public/dashboard.png)
 
+### Incomes & Budgets
+Define your limits and track your earnings with clear, card-based UI.
+![Spendlytic AI Incomes](/public/incomes.png)
+![Spendlytic AI Budgets](/public/budgets.png)
+
 ### Expenses
-
-Users can add and track their expenses in different categories. The system automatically adjusts the budget and provides insights on whether the spending is on track or over the limit.
-
+Log individual expenses and see them immediately deduct from your allocated budgets.
 ![Spendlytic AI Expenses](/public/expenses.png)
 
-### Incomes
+## Getting Started
 
-Track your various sources of income and see how they align with your budgets. The app lets users input multiple streams of income and view summary insights.
+1. **Clone the repository.**
+2. **Install dependencies:** `npm install`
+3. **Set up Environment Variables:** Create a `.env.local` file and add your `DATABASE_URL`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, and `GEMINI_API_KEY`.
+4. **Push the Database Schema:** `npm run db:push`
+5. **Run the Development Server:** `npm run dev`
 
-![Spendlytic AI Incomes](/public/incomes.png)
-
-### Budgets
-
-Users can create and allocate budgets for different categories (e.g., food, transportation, etc.) and monitor their remaining budget against expenses.
-
-![Spendlytic AI Budgets](/public/budgets.png)
+Visit `http://localhost:3000` to start tracking your finances with AI!
