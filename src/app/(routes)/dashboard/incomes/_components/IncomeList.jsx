@@ -43,7 +43,7 @@ function IncomeList() {
             ))
           : incomelist?.length > 0
           ? incomelist.map((budget, index) => (
-              <IncomeItem budget={budget} key={index} />
+              <IncomeItem income={budget} key={index} refreshData={() => loadIncomes()} />
             ))
           : (
               <div className="col-span-2 text-center p-10">

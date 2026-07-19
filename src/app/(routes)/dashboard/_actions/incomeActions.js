@@ -52,3 +52,21 @@ export async function deleteIncome(incomeId) {
   revalidatePath("/dashboard/incomes");
   return result;
 }
+
+export async function editIncome(id, data) {
+  const user = await currentUser();
+  if (!user || !user.primaryEmailAddress) throw new Error("Unauthorized");
+  
+  const email = user.primaryEmailAddress.emailAddress;
+
+  const result = await db.update(Incomes).set({
+    name: data.name,
+    amount: data.amount,
+    icon: data.icon,
+  })
+  .where(and(eq(Incomes.id, id), eq(Incomes.createdBy, email)))
+  .returning();
+
+  revalidatePath("/dashboard/incomes");
+  return result;
+}
