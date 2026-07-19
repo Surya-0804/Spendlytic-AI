@@ -40,17 +40,31 @@ const Footer = () => {
                 <li className="mb-4">
                   <a
                     href="https://github.com/Surya-0804"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:underline "
                   >
                     Github
                   </a>
                 </li>
-                <li>
+                <li className="mb-4">
                   <a
-                    href="https://discord.gg/4eeurUVvTy"
+                    href="https://www.linkedin.com/in/suryaabothula"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                    Discord
+                    LinkedIn
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.instagram.com/surya_0804/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    Instagram
                   </a>
                 </li>
               </ul>
@@ -77,7 +91,7 @@ const Footer = () => {
         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            © 2024{" "}
+            © {new Date().getFullYear()}{" "}
             <a href="#" className="hover:underline">
               Spendlytic AI™
             </a>
