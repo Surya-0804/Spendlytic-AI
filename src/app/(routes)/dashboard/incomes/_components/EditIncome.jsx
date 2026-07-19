@@ -15,11 +15,11 @@ import {
 import EmojiPicker from "emoji-picker-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { editBudget } from "../../_actions/budgetActions";
-import { budgetSchema } from "@/lib/validations";
+import { editIncome } from "../../_actions/incomeActions";
+import { incomeSchema } from "@/lib/validations";
 
-function EditBudget({ budgetInfo, refreshData }) {
-  const [emojiIcon, setEmojiIcon] = useState(budgetInfo?.icon);
+function EditIncome({ incomeInfo, refreshData }) {
+  const [emojiIcon, setEmojiIcon] = useState(incomeInfo?.icon);
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
   const [name, setName] = useState("");
@@ -28,15 +28,15 @@ function EditBudget({ budgetInfo, refreshData }) {
   const [amountError, setAmountError] = useState("");
 
   useEffect(() => {
-    if (budgetInfo) {
-      setEmojiIcon(budgetInfo?.icon);
-      setAmount(budgetInfo.amount);
-      setName(budgetInfo.name);
+    if (incomeInfo) {
+      setEmojiIcon(incomeInfo?.icon);
+      setAmount(incomeInfo.amount);
+      setName(incomeInfo.name);
     }
-  }, [budgetInfo]);
+  }, [incomeInfo]);
 
   const validate = () => {
-    const result = budgetSchema.safeParse({ name, amount, icon: emojiIcon });
+    const result = incomeSchema.safeParse({ name, amount, icon: emojiIcon });
     if (!result.success) {
       const fieldErrors = result.error.flatten().fieldErrors;
       setNameError(fieldErrors.name?.[0] || "");
@@ -58,14 +58,14 @@ function EditBudget({ budgetInfo, refreshData }) {
     setAmountError("");
   };
 
-  const onUpdateBudget = async () => {
+  const onUpdateIncome = async () => {
     if (!validate()) {
       toast.error("Please fix the errors before submitting");
       return;
     }
 
     try {
-      const result = await editBudget(budgetInfo.id, {
+      const result = await editIncome(incomeInfo.id, {
         name: name.trim(),
         amount: parseFloat(amount),
         icon: emojiIcon,
@@ -73,11 +73,11 @@ function EditBudget({ budgetInfo, refreshData }) {
 
       if (result) {
         refreshData();
-        toast.success("Budget Updated!");
+        toast.success("Income Updated!");
       }
     } catch (error) {
-      console.error("Error updating budget:", error);
-      toast.error("Failed to update budget. Please try again.");
+      console.error("Error updating income:", error);
+      toast.error("Failed to update income. Please try again.");
     }
   };
   
@@ -85,14 +85,14 @@ function EditBudget({ budgetInfo, refreshData }) {
     <div>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="flex space-x-2 gap-2 rounded-full">
-            {" "}
-            <PenBox className="w-4" /> Edit
+          <Button variant="outline" size="sm" className="flex space-x-2 gap-2 rounded-full">
+            <PenBox className="w-4 h-4 text-blue-500" /> 
+            <span className="hidden sm:inline">Edit</span>
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update Budget</DialogTitle>
+            <DialogTitle>Update Income Source</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
                 <Button
@@ -112,9 +112,9 @@ function EditBudget({ budgetInfo, refreshData }) {
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Name</h2>
+                  <h2 className="text-black font-medium my-1">Source Name</h2>
                   <Input
-                    placeholder="e.g. Home Decor"
+                    placeholder="e.g. Freelance"
                     value={name}
                     onChange={handleNameChange}
                     className={nameError ? "border-red-500" : ""}
@@ -124,7 +124,7 @@ function EditBudget({ budgetInfo, refreshData }) {
                   )}
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Amount</h2>
+                  <h2 className="text-black font-medium my-1">Amount</h2>
                   <Input
                     type="number"
                     value={amount}
@@ -145,10 +145,10 @@ function EditBudget({ budgetInfo, refreshData }) {
             <DialogClose asChild>
               <Button
                 disabled={!(name && amount) || nameError || amountError}
-                onClick={() => onUpdateBudget()}
+                onClick={() => onUpdateIncome()}
                 className="mt-5 w-full rounded-full"
               >
-                Update Budget
+                Update Income
               </Button>
             </DialogClose>
           </DialogFooter>
@@ -158,4 +158,4 @@ function EditBudget({ budgetInfo, refreshData }) {
   );
 }
 
-export default EditBudget;
+export default EditIncome;

@@ -8,6 +8,7 @@ import {
   ReceiptText,
 } from "lucide-react";
 import formatNumber from "../../../../../utils";
+import { Scale } from "lucide-react";
 
 const CardInfo = ({ budgetList, incomeList }) => {
   const [totalBudget, setTotalBudget] = useState(0);
@@ -127,6 +128,15 @@ const CardInfo = ({ budgetList, incomeList }) => {
                 </h2>
               </div>
               <CircleDollarSign className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
+            </div>
+            <div className="p-7 border rounded-2xl flex items-center justify-between bg-blue-50">
+              <div>
+                <h2 className="text-sm">Remaining Balance</h2>
+                <h2 className={`font-bold text-2xl ${totalIncome - totalSpend < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                  {formatNumber(totalIncome - totalSpend)}
+                </h2>
+              </div>
+              <Scale className={`p-3 h-12 w-12 rounded-full text-white ${totalIncome - totalSpend < 0 ? 'bg-red-500' : 'bg-green-600'}`} />
             </div>
           </div>
         </div>

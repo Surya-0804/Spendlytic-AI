@@ -13,10 +13,9 @@ import {
 import EmojiPicker from "emoji-picker-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { db } from "../../../../../../utils/dbConfig";
-import { Incomes } from "../../../../../../utils/schema";
+import { createIncome } from "../../_actions/incomeActions";
+import { incomeSchema } from "@/lib/validations";
 
 function CreateIncomes({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
@@ -27,95 +26,45 @@ function CreateIncomes({ refreshData }) {
   const [nameError, setNameError] = useState("");
   const [amountError, setAmountError] = useState("");
 
-  const { user } = useUser();
-
-  /**
-   * Validate income source name
-   */
-  const validateName = (value) => {
-    if (!value || value.trim() === "") {
-      setNameError("Income source name is required");
-      return false;
-    }
-    if (value.length > 50) {
-      setNameError("Income source name must be less than 50 characters");
+  const validate = () => {
+    const result = incomeSchema.safeParse({ name, amount, icon: emojiIcon });
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setNameError(fieldErrors.name?.[0] || "");
+      setAmountError(fieldErrors.amount?.[0] || "");
       return false;
     }
     setNameError("");
-    return true;
-  };
-
-  /**
-   * Validate income amount
-   */
-  const validateAmount = (value) => {
-    if (!value || value.trim() === "") {
-      setAmountError("Income amount is required");
-      return false;
-    }
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) {
-      setAmountError("Please enter a valid number");
-      return false;
-    }
-    if (numValue <= 0) {
-      setAmountError("Amount must be greater than 0");
-      return false;
-    }
-    if (numValue > 99999999) {
-      setAmountError("Amount is too large");
-      return false;
-    }
     setAmountError("");
     return true;
   };
 
-  /**
-   * Handle name input change
-   */
   const handleNameChange = (e) => {
-    const value = e.target.value;
-    setName(value);
-    if (value) validateName(value);
+    setName(e.target.value);
+    setNameError("");
   };
 
-  /**
-   * Handle amount input change
-   */
   const handleAmountChange = (e) => {
-    const value = e.target.value;
-    setAmount(value);
-    if (value) validateAmount(value);
+    setAmount(e.target.value);
+    setAmountError("");
   };
 
-  /**
-   * Used to Create New Income Source
-   */
   const onCreateIncomes = async () => {
-    // Final validation before submission
-    const isNameValid = validateName(name);
-    const isAmountValid = validateAmount(amount);
-
-    if (!isNameValid || !isAmountValid) {
+    if (!validate()) {
       toast.error("Please fix the errors before submitting");
       return;
     }
 
     try {
-      const result = await db
-        .insert(Incomes)
-        .values({
-          name: name.trim(),
-          amount: amount,
-          createdBy: user?.primaryEmailAddress?.emailAddress,
-          icon: emojiIcon,
-        })
-        .returning({ insertedId: Incomes.id });
+      const result = await createIncome({
+        name: name.trim(),
+        amount: parseFloat(amount),
+        icon: emojiIcon,
+      });
 
       if (result) {
         refreshData();
         toast.success("New Income Source Created!");
-        // Reset form
         setName("");
         setAmount("");
         setNameError("");
