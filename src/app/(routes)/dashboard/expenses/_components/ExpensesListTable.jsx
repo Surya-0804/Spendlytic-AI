@@ -33,22 +33,24 @@ function ExpenseListTable({ expensesList, refreshData }) {
             <h2 className="font-bold">Date</h2>
             <h2 className="font-bold">Action</h2>
           </div>
-          {expensesList.map((expenses) => (
-            <div
-              key={expenses.id} // Ensure each item has a unique key
-              className="grid grid-cols-4 bg-slate-50 dark:bg-zinc-900 border-b dark:border-zinc-800 p-2 items-center"
-            >
-              <h2>{expenses.name}</h2>
-              <h2>{formatCurrency(expenses.amount)}</h2>
-              <h2>{new Date(expenses.createdAt).toLocaleDateString()}</h2>
+          <div className="max-h-[350px] overflow-y-auto custom-scrollbar rounded-bl-xl rounded-br-xl border border-t-0 dark:border-zinc-800">
+            {expensesList.map((expenses) => (
               <div
-                onClick={() => deleteExpense(expenses)}
-                className="text-red-500 cursor-pointer flex items-center gap-1 hover:text-red-700 transition-colors"
+                key={expenses.id} // Ensure each item has a unique key
+                className="grid grid-cols-4 bg-slate-50 dark:bg-zinc-900 border-b dark:border-zinc-800 p-2 items-center last:border-b-0"
               >
-                <Trash className="w-4 h-4" /> Delete
+                <h2>{expenses.name}</h2>
+                <h2>{formatCurrency(expenses.amount)}</h2>
+                <h2>{new Date(expenses.createdAt).toLocaleDateString()}</h2>
+                <div
+                  onClick={() => deleteExpense(expenses)}
+                  className="text-red-500 cursor-pointer flex items-center gap-1 hover:text-red-700 transition-colors"
+                >
+                  <Trash className="w-4 h-4" /> Delete
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </>
       ) : (
         <div className="mt-3 p-6 text-center border-2 border-dashed rounded-lg">

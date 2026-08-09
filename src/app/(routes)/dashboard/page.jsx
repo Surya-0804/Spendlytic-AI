@@ -148,9 +148,10 @@ const Dashboard = () => {
             expensesList={expenseList}
           />
         </div>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 h-full">
           <h2 className="font-bold text-lg">Latest Budgets</h2>
-          <div className="flex flex-col gap-5 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="relative flex-1">
+            <div className="lg:absolute lg:inset-0 overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-5 max-h-[500px] lg:max-h-none">
             {loading
               ? [1, 2, 3, 4].map((items, index) => (
                   <div
@@ -186,6 +187,7 @@ const Dashboard = () => {
                     )}
                   </div>
                 )}
+            </div>
           </div>
         </div>
       </div>
