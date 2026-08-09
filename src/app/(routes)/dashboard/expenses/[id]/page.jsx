@@ -112,7 +112,7 @@ function ExpensesScreen({ params }) {
         md:grid-cols-2 mt-6 gap-5"
       >
         {budgetInfo ? (
-          <BudgetItem budget={budgetInfo} />
+          <BudgetItem budget={budgetInfo} showExactAmount={true} />
         ) : (
           <div
             className="h-[150px] w-full bg-slate-200 dark:bg-zinc-800

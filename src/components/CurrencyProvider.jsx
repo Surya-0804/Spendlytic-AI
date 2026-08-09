@@ -18,21 +18,23 @@ export function CurrencyProvider({ children }) {
     localStorage.setItem("spendlytic_currency", newCurrency);
   };
 
-  const formatCurrency = (num) => {
+  const formatCurrency = (num, exact = false) => {
     if (num === undefined || num === null) return "";
     
     const formattedNumber = Number(num).toLocaleString("en-US", {
-      maximumFractionDigits: 1,
+      maximumFractionDigits: exact ? 2 : 1,
     });
 
-    if (num >= 1e9) {
-      return `${currency}${(num / 1e9).toFixed(1).replace(/\.0$/, "")}B`;
-    }
-    if (num >= 1e6) {
-      return `${currency}${(num / 1e6).toFixed(1).replace(/\.0$/, "")}M`;
-    }
-    if (num >= 1e3) {
-      return `${currency}${(num / 1e3).toFixed(1).replace(/\.0$/, "")}K`;
+    if (!exact) {
+      if (num >= 1e9) {
+        return `${currency}${(num / 1e9).toFixed(1).replace(/\.0$/, "")}B`;
+      }
+      if (num >= 1e6) {
+        return `${currency}${(num / 1e6).toFixed(1).replace(/\.0$/, "")}M`;
+      }
+      if (num >= 1e3) {
+        return `${currency}${(num / 1e3).toFixed(1).replace(/\.0$/, "")}K`;
+      }
     }
     return `${currency}${formattedNumber}`;
   };

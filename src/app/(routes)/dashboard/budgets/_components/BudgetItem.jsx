@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { useCurrency } from "@/components/CurrencyProvider";
 
-function BudgetItem({ budget }) {
+function BudgetItem({ budget, showExactAmount = false }) {
   const { formatCurrency } = useCurrency();
   const calculateProgressPerc = () => {
     const perc = (budget.totalSpend / budget.amount) * 100;
@@ -34,10 +34,10 @@ function BudgetItem({ budget }) {
         <div className="mt-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-xs text-slate-400">
-              {formatCurrency(budget.totalSpend ? budget.totalSpend : 0)} Spend
+              {formatCurrency(budget.totalSpend ? budget.totalSpend : 0, showExactAmount)} Spend
             </h2>
             <h2 className="text-xs text-slate-400">
-              {formatCurrency(budget.amount - budget.totalSpend)} Remaining
+              {formatCurrency(budget.amount - budget.totalSpend, showExactAmount)} Remaining
             </h2>
           </div>
           <div

@@ -180,7 +180,7 @@ function QuickAdd() {
                 {/* Budget Selection for Expense */}
                 {modalType === 'expense' && (
                   <div>
-                    <h2 className="text-black font-medium mb-1">Select Budget</h2>
+                    <h2 className="text-black dark:text-white font-medium mb-1">Select Budget</h2>
                     {budgets.length > 0 ? (
                       <select 
                         className="w-full border rounded-md p-2" 
@@ -200,7 +200,7 @@ function QuickAdd() {
 
                 {/* Name Input */}
                 <div>
-                  <h2 className="text-black font-medium mb-1">
+                  <h2 className="text-black dark:text-white font-medium mb-1">
                     {modalType === 'expense' ? 'Expense Name' : 
                      modalType === 'budget' ? 'Budget Name' : 'Source Name'}
                   </h2>
@@ -218,7 +218,7 @@ function QuickAdd() {
 
                 {/* Amount Input */}
                 <div>
-                  <h2 className="text-black font-medium mb-1">Amount</h2>
+                  <h2 className="text-black dark:text-white font-medium mb-1">Amount</h2>
                   <Input
                     type="number"
                     placeholder="e.g. 50"

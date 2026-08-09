@@ -70,7 +70,7 @@ function AddExpense({ budgetId, user, refreshData }) {
     <div className="border p-5 rounded-2xl">
       <h2 className="font-bold text-lg">Add Expense</h2>
       <div className="mt-2">
-        <h2 className="text-black font-medium my-1">Expense Name</h2>
+        <h2 className="text-black dark:text-white font-medium my-1">Expense Name</h2>
         <Input
           placeholder="e.g. Bedroom Decor"
           value={name}
@@ -82,7 +82,7 @@ function AddExpense({ budgetId, user, refreshData }) {
         )}
       </div>
       <div className="mt-2">
-        <h2 className="text-black font-medium my-1">Expense Amount</h2>
+        <h2 className="text-black dark:text-white font-medium my-1">Expense Amount</h2>
         <Input
           type="number"
           placeholder="e.g. 1000"

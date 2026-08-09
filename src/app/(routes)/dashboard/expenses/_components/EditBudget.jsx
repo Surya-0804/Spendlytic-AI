@@ -112,7 +112,7 @@ function EditBudget({ budgetInfo, refreshData }) {
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Name</h2>
+                  <h2 className="text-black dark:text-white font-medium my-1">Budget Name</h2>
                   <Input
                     placeholder="e.g. Home Decor"
                     value={name}
@@ -124,7 +124,7 @@ function EditBudget({ budgetInfo, refreshData }) {
                   )}
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Amount</h2>
+                  <h2 className="text-black dark:text-white font-medium my-1">Budget Amount</h2>
                   <Input
                     type="number"
                     value={amount}
