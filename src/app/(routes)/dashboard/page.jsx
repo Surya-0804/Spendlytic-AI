@@ -148,43 +148,45 @@ const Dashboard = () => {
             expensesList={expenseList}
           />
         </div>
-        <div className="grid gap-5">
+        <div className="flex flex-col gap-5">
           <h2 className="font-bold text-lg">Latest Budgets</h2>
-          {loading
-            ? [1, 2, 3, 4].map((items, index) => (
-                <div
-                  key={index}
-                  className="h-[180px] w-full bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse"
-                ></div>
-              ))
-            : budgetList?.length > 0
-            ? budgetList.map((budget, index) => (
-                <BudgetItem budget={budget} key={index} />
-              ))
-            : (
-                <div className="text-center p-8 border-2 border-dashed rounded-lg">
-                  <div className="text-gray-400">
-                    <h3 className="text-lg font-semibold mb-1">No Budgets</h3>
-                    <p className="text-xs mb-3">Create your first budget!</p>
-                    <a
-                      href="/dashboard/budgets"
-                      className="text-blue-600 text-sm hover:underline"
-                    >
-                      Create Budget →
-                    </a>
+          <div className="flex flex-col gap-5 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
+            {loading
+              ? [1, 2, 3, 4].map((items, index) => (
+                  <div
+                    key={index}
+                    className="h-[180px] w-full bg-slate-200 dark:bg-zinc-800 rounded-lg animate-pulse min-h-[180px]"
+                  ></div>
+                ))
+              : budgetList?.length > 0
+              ? budgetList.map((budget, index) => (
+                  <BudgetItem budget={budget} key={index} />
+                ))
+              : (
+                  <div className="text-center p-8 border-2 border-dashed rounded-lg">
+                    <div className="text-gray-400">
+                      <h3 className="text-lg font-semibold mb-1">No Budgets</h3>
+                      <p className="text-xs mb-3">Create your first budget!</p>
+                      <a
+                        href="/dashboard/budgets"
+                        className="text-blue-600 text-sm hover:underline"
+                      >
+                        Create Budget →
+                      </a>
+                    </div>
+                    {selectedMonth && (
+                      <button
+                        onClick={handleCloneClick}
+                        disabled={cloning}
+                        className="mt-4 flex items-center gap-2 justify-center w-full py-2 px-4 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-sm font-medium transition-colors"
+                      >
+                        <CopyPlus className="w-4 h-4" />
+                        {cloning ? "Cloning..." : "Clone from Prev Month"}
+                      </button>
+                    )}
                   </div>
-                  {selectedMonth && (
-                    <button
-                      onClick={handleCloneClick}
-                      disabled={cloning}
-                      className="mt-4 flex items-center gap-2 justify-center w-full py-2 px-4 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-sm font-medium transition-colors"
-                    >
-                      <CopyPlus className="w-4 h-4" />
-                      {cloning ? "Cloning..." : "Clone from Prev Month"}
-                    </button>
-                  )}
-                </div>
-              )}
+                )}
+          </div>
         </div>
       </div>
       <WelcomeDialog isOpen={showWelcome} onOpenChange={setShowWelcome} />
