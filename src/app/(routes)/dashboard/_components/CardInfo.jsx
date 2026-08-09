@@ -50,6 +50,13 @@ const CardInfo = ({ budgetList, incomeList }) => {
         }
 
         setFinancialAdvice(""); // triggers loading state
+        
+        const categories = budgetList.map(b => ({
+          name: b.name,
+          budget: Number(b.amount),
+          spent: Number(b.totalSpend)
+        }));
+
         const response = await fetch("/api/financial-advice", {
           method: "POST",
           headers: {
@@ -59,6 +66,7 @@ const CardInfo = ({ budgetList, incomeList }) => {
             totalBudget,
             totalIncome,
             totalSpend,
+            categories
           }),
         });
 

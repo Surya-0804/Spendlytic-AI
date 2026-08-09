@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import getFinancialAdvice from "../../../../utils/getFinancialAdvice";
+import getDeepFinancialAnalysis from "../../../../utils/getDeepFinancialAnalysis";
 
 export async function POST(request) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request) {
       );
     }
 
-    const advice = await getFinancialAdvice({ totalBudget, totalIncome, totalSpend, categories });
+    const advice = await getDeepFinancialAnalysis({ totalBudget, totalIncome, totalSpend, categories });
 
     return NextResponse.json({ advice });
   } catch (error) {
