@@ -31,7 +31,7 @@ function DashboardHeader() {
   }, [pathname]);
 
   return (
-    <div className="p-5 shadow-sm border-b flex justify-between items-center bg-white dark:bg-zinc-900 dark:border-zinc-800 sticky top-0 z-10">
+    <div className="p-5 shadow-sm border-b flex justify-between items-center bg-white dark:bg-zinc-900 dark:border-zinc-800 sticky top-0 z-50">
       <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{pageName}</div>
       <div className="flex items-center gap-4">
         {selectedMonth && (

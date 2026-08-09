@@ -24,7 +24,6 @@ const CardInfo = ({ budgetList, incomeList }) => {
     }
   }, [budgetList, incomeList]);
 
-  useEffect(() => {
   const fetchFinancialAdvice = async (forceRefresh = false) => {
     if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
       try {
@@ -52,38 +51,39 @@ const CardInfo = ({ budgetList, incomeList }) => {
 
         setFinancialAdvice(""); // triggers loading state
         const response = await fetch("/api/financial-advice", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              totalBudget,
-              totalIncome,
-              totalSpend,
-            }),
-          });
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            totalBudget,
+            totalIncome,
+            totalSpend,
+          }),
+        });
 
-          if (response.ok) {
-            const data = await response.json();
-            setFinancialAdvice(data.advice);
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-              advice: data.advice,
-              timestamp: Date.now(),
-              budget: totalBudget,
-              income: totalIncome,
-              spend: totalSpend
-            }));
-          } else {
-            setFinancialAdvice("Unable to fetch financial advice at this time.");
-          }
-        } catch (error) {
-          console.error("Error fetching financial advice:", error);
+        if (response.ok) {
+          const data = await response.json();
+          setFinancialAdvice(data.advice);
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            advice: data.advice,
+            timestamp: Date.now(),
+            budget: totalBudget,
+            income: totalIncome,
+            spend: totalSpend
+          }));
+        } else {
           setFinancialAdvice("Unable to fetch financial advice at this time.");
         }
-      };
-
-      fetchFinancialAdvice();
+      } catch (error) {
+        console.error("Error fetching financial advice:", error);
+        setFinancialAdvice("Unable to fetch financial advice at this time.");
+      }
     }
+  };
+
+  useEffect(() => {
+    fetchFinancialAdvice();
   }, [totalBudget, totalIncome, totalSpend]);
 
   const CalculateCardInfo = () => {

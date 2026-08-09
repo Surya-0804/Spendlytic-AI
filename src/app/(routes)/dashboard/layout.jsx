@@ -9,7 +9,7 @@ const DashboardLayout = ({ children }) => {
     <MonthProvider>
       <div>
         {/* Sidebar */}
-        <div className="fixed md:w-64 hidden md:block">
+        <div className="fixed md:w-64 hidden md:block z-50">
           <SideNav />
         </div>
         {/* Main content */}
